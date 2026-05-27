@@ -70,23 +70,30 @@ export function Footer() {
             >
               +234 800 000 0000
             </a>
-            <p className="text-xs" style={{ color: "var(--muted)" }}>
-              Abuja, Nigeria
-            </p>
           </div>
         </div>
       </div>
 
       <div
-        className="px-6 md:px-16 py-4 border-t flex items-center justify-between"
+        className="px-6 md:px-16 py-4 border-t flex flex-col items-center gap-3"
         style={{ borderColor: "var(--border)" }}
       >
-        <p className="text-xs" style={{ color: "var(--muted)" }}>
+        <p className="text-xs text-center" style={{ color: "var(--muted)" }}>
           © {new Date().getFullYear()} Soulj. All rights reserved.
         </p>
-        <p className="text-xs" style={{ color: "var(--muted)" }}>
-          Abuja, Nigeria.
-        </p>
+
+        <Link
+          href="https://www.tiktok.com/@.nomso"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs tracking-[0.1em] uppercase transition-colors hover:opacity-80"
+          style={{ color: "var(--body)" }}
+        >
+          Made by{" "}
+          <span className="font-bold" style={{ color: "var(--muted)" }}>
+            Nomso
+          </span>
+        </Link>
       </div>
     </footer>
   );
