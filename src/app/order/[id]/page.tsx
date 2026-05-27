@@ -1,0 +1,114 @@
+import { prisma } from "@/lib/prisma";
+import { notFound } from "next/navigation";
+import { formatNGN, formatUSD } from "@/lib/utils";
+import Link from "next/link";
+
+export default async function OrderConfirmation({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  const order = await prisma.order.findUnique({
+    where: { reference: id },
+  });
+
+  if (!order) notFound();
+
+  const items = order.items as any[];
+  const fmt = (n: number) =>
+    order.currency === "NGN" ? formatNGN(n) : formatUSD(n);
+
+  return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
+      style={{ background: "var(--page)" }}
+    >
+      <div className="w-full max-w-md space-y-10">
+        <div className="text-center space-y-3">
+          <p
+            className="text-xs tracking-[0.3em] uppercase"
+            style={{ color: "var(--muted)" }}
+          >
+            Order confirmed
+          </p>
+          <h1 className="text-3xl font-medium" style={{ color: "var(--body)" }}>
+            Thank you,
+            <br />
+            {order.firstName}.
+          </h1>
+          <p className="text-sm" style={{ color: "var(--muted)" }}>
+            A confirmation has been sent to {order.email}.
+          </p>
+        </div>
+
+        <div
+          className="border p-6 space-y-4"
+          style={{ borderColor: "var(--card)" }}
+        >
+          <p
+            className="text-xs tracking-[0.2em] uppercase"
+            style={{ color: "var(--muted)" }}
+          >
+            Ref: {order.reference}
+          </p>
+
+          <div className="space-y-3">
+            {items.map((item: any, i: number) => (
+              <div key={i} className="flex justify-between text-sm">
+                <span style={{ color: "var(--muted)" }}>
+                  {item.name} × {item.quantity}
+                </span>
+                <span style={{ color: "var(--body)" }}>
+                  {fmt(
+                    (order.currency === "NGN" ? item.priceNGN : item.priceUSD) *
+                      item.quantity,
+                  )}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="pt-4 border-t space-y-2"
+            style={{ borderColor: "var(--card)" }}
+          >
+            <div className="flex justify-between text-sm">
+              <span style={{ color: "var(--muted)" }}>Delivery</span>
+              <span style={{ color: "var(--body)" }}>
+                {fmt(order.deliveryFee)}
+              </span>
+            </div>
+            <div className="flex justify-between text-sm font-medium">
+              <span style={{ color: "var(--body)" }}>Total</span>
+              <span style={{ color: "var(--body)" }}>
+                {fmt(order.totalNGN)}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="pt-4 border-t text-sm space-y-1"
+            style={{ borderColor: "var(--card)", color: "var(--muted)" }}
+          >
+            <p>{order.address}</p>
+            <p>
+              {order.city}, {order.state}
+            </p>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <Link
+            href="/shop"
+            className="text-xs tracking-[0.2em] uppercase border px-8 py-3 inline-block transition-all"
+            style={{ borderColor: "var(--body)", color: "var(--body)" }}
+          >
+            Continue shopping
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
