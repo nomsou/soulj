@@ -15,14 +15,11 @@ export function HeroVideo() {
         <source src="/videos/hero.mp4" type="video/mp4" />
       </video>
 
-      {/* overlay */}
-      <div className="absolute inset-0 bg-black/30" />
-
       {/* content */}
-      <div className="relative z-10 flex flex-col justify-end h-full px-6 md:px-16 pb-20">
+      <div className="relative z-10 flex flex-col justify-end h-full px-6 md:px-16 pb-16 md:pb-24">
         <p
           className="text-xs tracking-[0.3em] uppercase mb-3"
-          style={{ color: "var(--hero-text)" }}
+          style={{ color: "var(--hero-text)", opacity: 0.6 }}
         >
           Abuja — Drop 001
         </p>
@@ -36,7 +33,11 @@ export function HeroVideo() {
         </h1>
         <Link
           href="/shop"
-          className="inline-flex items-center gap-3 text-sm tracking-[0.2em] uppercase text-white border border-white/40 px-6 py-3 w-fit hover:bg-white hover:text-soulj-black transition-all duration-300"
+          className="inline-flex items-center gap-3 text-sm tracking-[0.2em] uppercase px-6 py-3 w-fit border transition-all duration-300 hover:opacity-80"
+          style={{
+            color: "var(--hero-text)",
+            borderColor: "var(--hero-text)",
+          }}
         >
           Shop the drop
         </Link>

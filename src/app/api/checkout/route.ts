@@ -2,13 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: NextRequest) {
-  const { customerInfo, items, currency, grandTotal, deliveryFee } =
+  const { customerInfo, items, currency, grandTotal, deliveryFeeNGN } =
     await req.json();
 
-  const amountInKobo =
-    currency === "NGN"
-      ? Math.round(grandTotal * 100)
-      : Math.round(grandTotal * 100);
+  const amountInKobo = Math.round(grandTotal * 100);
 
   const reference = `SOULJ-${Date.now()}-${Math.random()
     .toString(36)
@@ -24,7 +21,7 @@ export async function POST(req: NextRequest) {
     body: JSON.stringify({
       email: customerInfo.email,
       amount: amountInKobo,
-      currency: currency,
+      currency,
       reference,
       metadata: {
         custom_fields: [
@@ -55,11 +52,11 @@ export async function POST(req: NextRequest) {
       city: customerInfo.city,
       state: customerInfo.state,
       items,
-      subtotalNGN: grandTotal - deliveryFee,
-      deliveryFee,
+      subtotalNGN: grandTotal - deliveryFeeNGN,
+      deliveryFee: deliveryFeeNGN,
       totalNGN: grandTotal,
       currency,
-      status: "PENDING",
+      status: "PAID",
       paystackRef: reference,
     },
   });

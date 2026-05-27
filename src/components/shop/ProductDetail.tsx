@@ -29,6 +29,9 @@ export function ProductDetail({ product }: { product: Product }) {
       ? formatNGN(product.priceNGN)
       : formatUSD(product.priceUSD);
 
+  const isBlack = product.color.toLowerCase() === "black";
+  const outOfStock = product.stock === 0;
+
   const handleAddToCart = () => {
     addItem({
       id: product.id,
@@ -41,27 +44,21 @@ export function ProductDetail({ product }: { product: Product }) {
       image: product.images[0] ?? "",
       quantity: 1,
     });
-
     toast.success(`${product.name} added to cart.`);
   };
 
-  const outOfStock = product.stock === 0;
-
   return (
     <div
-      className="min-h-screen pt-24 pb-20"
+      className="min-h-screen pt-20 pb-20"
       style={{ background: "var(--page)" }}
     >
-      <div className="px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+      <div className="px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start py-10">
         {/* images */}
         <div className="space-y-3">
           <div
-            className="aspect-[3/4] w-full overflow-hidden"
+            className="aspect-[3/4] w-full overflow-hidden flex items-center justify-center"
             style={{
-              background:
-                product.color.toLowerCase() === "black"
-                  ? "var(--card-dark)"
-                  : "var(--card)",
+              background: isBlack ? "var(--card-dark)" : "var(--card)",
             }}
           >
             {product.images[selectedImage] ? (
@@ -71,28 +68,27 @@ export function ProductDetail({ product }: { product: Product }) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <span
-                  className="text-xs tracking-[0.3em] uppercase"
-                  style={{ color: "var(--muted)" }}
-                >
-                  Soulj
-                </span>
-              </div>
+              <span
+                className="text-xs tracking-[0.3em] uppercase"
+                style={{ color: "var(--muted)" }}
+              >
+                Soulj
+              </span>
             )}
           </div>
 
           {product.images.length > 1 && (
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {product.images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className="w-16 aspect-square overflow-hidden border transition-all"
+                  className="w-16 aspect-square overflow-hidden border-2 transition-all"
                   style={{
                     borderColor:
                       selectedImage === i ? "var(--body)" : "transparent",
                   }}
+                  aria-label={`View image ${i + 1}`}
                 >
                   <img
                     src={img}
@@ -106,7 +102,7 @@ export function ProductDetail({ product }: { product: Product }) {
         </div>
 
         {/* details */}
-        <div className="md:pt-8 space-y-8">
+        <div className="md:pt-4 space-y-8">
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-3"
@@ -115,14 +111,13 @@ export function ProductDetail({ product }: { product: Product }) {
               Soulj — Drop 001
             </p>
             <h1
-              className="text-3xl font-medium mb-2"
+              className="text-3xl font-medium mb-4"
               style={{ color: "var(--body)" }}
             >
               {product.name}
             </h1>
 
-            {/* currency toggle + price */}
-            <div className="flex items-center gap-4 mt-4">
+            <div className="flex items-center gap-4">
               <p
                 className="text-2xl font-medium"
                 style={{ color: "var(--body)" }}
@@ -150,32 +145,26 @@ export function ProductDetail({ product }: { product: Product }) {
             </div>
           </div>
 
-          {/* meta */}
           <div
-            className="space-y-3 text-sm border-t border-b py-6"
-            style={{
-              borderColor: "var(--card)",
-              color: "var(--muted)",
-            }}
+            className="space-y-3 border-t border-b py-6"
+            style={{ borderColor: "var(--border)" }}
           >
-            <div className="flex justify-between">
-              <span className="tracking-[0.1em] uppercase text-xs">Colour</span>
-              <span>{product.color}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="tracking-[0.1em] uppercase text-xs">Size</span>
-              <span>{product.size}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="tracking-[0.1em] uppercase text-xs">
-                Delivery
-              </span>
-              <span>Flat ₦2,500</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="tracking-[0.1em] uppercase text-xs">Stock</span>
-              <span>{outOfStock ? "Sold out" : `${product.stock} left`}</span>
-            </div>
+            {[
+              ["Colour", product.color],
+              ["Size", product.size],
+              ["Delivery", "Flat ₦2,500 — Nigeria only"],
+              ["Stock", outOfStock ? "Sold out" : `${product.stock} left`],
+            ].map(([label, val]) => (
+              <div key={label} className="flex justify-between text-sm">
+                <span
+                  className="tracking-[0.1em] uppercase text-xs"
+                  style={{ color: "var(--muted)" }}
+                >
+                  {label}
+                </span>
+                <span style={{ color: "var(--body)" }}>{val}</span>
+              </div>
+            ))}
           </div>
 
           {product.description && (
@@ -187,16 +176,12 @@ export function ProductDetail({ product }: { product: Product }) {
             </p>
           )}
 
-          {/* actions */}
           <div className="space-y-3">
             <button
               onClick={handleAddToCart}
               disabled={outOfStock}
               className="w-full py-4 text-sm tracking-[0.2em] uppercase font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{
-                background: "var(--body)",
-                color: "var(--page)",
-              }}
+              style={{ background: "var(--body)", color: "var(--page)" }}
             >
               {outOfStock ? "Sold out" : "Add to cart"}
             </button>
@@ -207,7 +192,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 router.push("/cart");
               }}
               disabled={outOfStock}
-              className="w-full py-4 text-sm tracking-[0.2em] uppercase border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-4 text-sm tracking-[0.2em] uppercase border transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[var(--body)] hover:text-[var(--page)]"
               style={{
                 borderColor: "var(--body)",
                 color: "var(--body)",
@@ -217,6 +202,16 @@ export function ProductDetail({ product }: { product: Product }) {
               Buy now
             </button>
           </div>
+
+          <p className="text-xs" style={{ color: "var(--muted)" }}>
+            Questions?{" "}
+            <a
+              href="mailto:hello@soulj.com"
+              className="underline underline-offset-2"
+            >
+              hello@soulj.com
+            </a>
+          </p>
         </div>
       </div>
     </div>

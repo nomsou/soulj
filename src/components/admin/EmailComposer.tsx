@@ -9,7 +9,7 @@ export function EmailComposer({ subscribers }: { subscribers: string[] }) {
   const [sent, setSent] = useState(false);
 
   const handleSend = async () => {
-    if (!subject.trim() || !body.trim()) return;
+    if (!subject.trim() || !body.trim() || subscribers.length === 0) return;
     setSending(true);
 
     await fetch("/api/send-email", {
@@ -25,26 +25,23 @@ export function EmailComposer({ subscribers }: { subscribers: string[] }) {
     setTimeout(() => setSent(false), 3000);
   };
 
-  const inputStyle = {
-    background: "transparent",
-    borderColor: "var(--card)",
-    color: "var(--body)",
-  };
+  const inputCls =
+    "w-full px-3 py-2.5 text-sm outline-none border bg-[#FAFAF5] text-[#0D0D0A]";
 
   return (
     <div>
       <p
         className="text-xs tracking-[0.2em] uppercase font-medium mb-4"
-        style={{ color: "var(--body)" }}
+        style={{ color: "#0D0D0A" }}
       >
         Send campaign
       </p>
 
       <div className="space-y-4">
-        <div className="space-y-1.5">
+        <div>
           <label
-            className="text-xs tracking-[0.12em] uppercase"
-            style={{ color: "var(--muted)" }}
+            className="block text-[10px] tracking-[0.1em] uppercase mb-1.5"
+            style={{ color: "#3D4A28" }}
           >
             Subject
           </label>
@@ -53,15 +50,15 @@ export function EmailComposer({ subscribers }: { subscribers: string[] }) {
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             placeholder="Drop 001 is live..."
-            className="w-full px-4 py-3 text-sm outline-none border"
-            style={inputStyle}
+            className={inputCls}
+            style={{ borderColor: "#D5D2BF" }}
           />
         </div>
 
-        <div className="space-y-1.5">
+        <div>
           <label
-            className="text-xs tracking-[0.12em] uppercase"
-            style={{ color: "var(--muted)" }}
+            className="block text-[10px] tracking-[0.1em] uppercase mb-1.5"
+            style={{ color: "#3D4A28" }}
           >
             Message
           </label>
@@ -70,13 +67,13 @@ export function EmailComposer({ subscribers }: { subscribers: string[] }) {
             onChange={(e) => setBody(e.target.value)}
             rows={8}
             placeholder="Write your message..."
-            className="w-full px-4 py-3 text-sm outline-none border resize-none"
-            style={inputStyle}
+            className={inputCls}
+            style={{ borderColor: "#D5D2BF", resize: "none" }}
           />
         </div>
 
         <div className="flex items-center justify-between">
-          <p className="text-xs" style={{ color: "var(--muted)" }}>
+          <p className="text-xs" style={{ color: "#3D4A28" }}>
             Sending to {subscribers.length} subscriber
             {subscribers.length !== 1 ? "s" : ""}
           </p>
@@ -84,7 +81,7 @@ export function EmailComposer({ subscribers }: { subscribers: string[] }) {
             onClick={handleSend}
             disabled={sending || subscribers.length === 0}
             className="px-6 py-2.5 text-xs tracking-[0.15em] uppercase font-medium transition-all disabled:opacity-40"
-            style={{ background: "var(--body)", color: "var(--page)" }}
+            style={{ background: "#0D0D0A", color: "#E8E2C8" }}
           >
             {sent ? "Sent!" : sending ? "Sending..." : "Send"}
           </button>

@@ -63,10 +63,10 @@ export function ThemeSwitcher({ currentTheme }: { currentTheme: string }) {
 
   return (
     <div className="p-8">
-      <h1 className="text-xl font-medium mb-2" style={{ color: "var(--body)" }}>
+      <h1 className="text-xl font-medium mb-2" style={{ color: "#0D0D0A" }}>
         Theme
       </h1>
-      <p className="text-sm mb-8" style={{ color: "var(--muted)" }}>
+      <p className="text-sm mb-8" style={{ color: "#3D4A28" }}>
         Changes apply to the storefront immediately on save.
       </p>
 
@@ -75,9 +75,9 @@ export function ThemeSwitcher({ currentTheme }: { currentTheme: string }) {
           <button
             key={t.id}
             onClick={() => setSelected(t.id)}
-            className="text-left border-2 overflow-hidden transition-all"
+            className="text-left overflow-hidden transition-all"
             style={{
-              borderColor: selected === t.id ? "var(--body)" : "transparent",
+              border: `2px solid ${selected === t.id ? "#0D0D0A" : "transparent"}`,
             }}
           >
             <div style={{ height: 80 }}>
@@ -98,14 +98,15 @@ export function ThemeSwitcher({ currentTheme }: { currentTheme: string }) {
                 <div style={{ flex: 1, height: 16, background: t.card }} />
               </div>
             </div>
-            <div className="p-3" style={{ background: "var(--card)" }}>
+            <div className="p-3" style={{ background: "#E8E4D4" }}>
               <p
                 className="text-xs font-medium mb-0.5"
-                style={{ color: "var(--body)" }}
+                style={{ color: "#0D0D0A" }}
               >
                 {t.name}
+                {t.id === currentTheme && " ✓"}
               </p>
-              <p className="text-[10px]" style={{ color: "var(--muted)" }}>
+              <p className="text-[10px]" style={{ color: "#3D4A28" }}>
                 {t.tag}
               </p>
             </div>
@@ -117,7 +118,7 @@ export function ThemeSwitcher({ currentTheme }: { currentTheme: string }) {
         onClick={handleSave}
         disabled={saving}
         className="px-8 py-3 text-sm tracking-[0.15em] uppercase font-medium transition-all disabled:opacity-50"
-        style={{ background: "var(--body)", color: "var(--page)" }}
+        style={{ background: "#0D0D0A", color: "#E8E2C8" }}
       >
         {saved ? "Saved!" : saving ? "Saving..." : "Save and apply"}
       </button>

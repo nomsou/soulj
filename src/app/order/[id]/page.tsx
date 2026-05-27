@@ -2,6 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { formatNGN, formatUSD } from "@/lib/utils";
 import Link from "next/link";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Order Confirmed" };
 
 export default async function OrderConfirmation({
   params,
@@ -45,7 +48,7 @@ export default async function OrderConfirmation({
 
         <div
           className="border p-6 space-y-4"
-          style={{ borderColor: "var(--card)" }}
+          style={{ borderColor: "var(--border)" }}
         >
           <p
             className="text-xs tracking-[0.2em] uppercase"
@@ -58,7 +61,7 @@ export default async function OrderConfirmation({
             {items.map((item: any, i: number) => (
               <div key={i} className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>
-                  {item.name} × {item.quantity}
+                  {item.name} — {item.color} × {item.quantity}
                 </span>
                 <span style={{ color: "var(--body)" }}>
                   {fmt(
@@ -72,7 +75,7 @@ export default async function OrderConfirmation({
 
           <div
             className="pt-4 border-t space-y-2"
-            style={{ borderColor: "var(--card)" }}
+            style={{ borderColor: "var(--border)" }}
           >
             <div className="flex justify-between text-sm">
               <span style={{ color: "var(--muted)" }}>Delivery</span>
@@ -90,7 +93,10 @@ export default async function OrderConfirmation({
 
           <div
             className="pt-4 border-t text-sm space-y-1"
-            style={{ borderColor: "var(--card)", color: "var(--muted)" }}
+            style={{
+              borderColor: "var(--border)",
+              color: "var(--muted)",
+            }}
           >
             <p>{order.address}</p>
             <p>
@@ -102,8 +108,11 @@ export default async function OrderConfirmation({
         <div className="text-center">
           <Link
             href="/shop"
-            className="text-xs tracking-[0.2em] uppercase border px-8 py-3 inline-block transition-all"
-            style={{ borderColor: "var(--body)", color: "var(--body)" }}
+            className="text-xs tracking-[0.2em] uppercase border px-8 py-3 inline-block transition-all hover:opacity-70"
+            style={{
+              borderColor: "var(--body)",
+              color: "var(--body)",
+            }}
           >
             Continue shopping
           </Link>

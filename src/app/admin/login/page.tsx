@@ -10,6 +10,7 @@ export default function AdminLogin() {
   const router = useRouter();
 
   const handleLogin = async () => {
+    if (!password.trim()) return;
     setLoading(true);
     setError("");
 
@@ -55,7 +56,7 @@ export default function AdminLogin() {
             className="w-full px-4 py-3 text-sm outline-none border"
             style={{
               background: "transparent",
-              borderColor: "var(--card)",
+              borderColor: "var(--border)",
               color: "var(--body)",
             }}
           />

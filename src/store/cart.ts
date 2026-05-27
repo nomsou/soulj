@@ -39,12 +39,16 @@ export const useCart = create<CartStore>()(
             ),
           }));
         } else {
-          set((s) => ({ items: [...s.items, { ...item, quantity: 1 }] }));
+          set((s) => ({
+            items: [...s.items, { ...item, quantity: 1 }],
+          }));
         }
       },
 
       removeItem: (id) =>
-        set((s) => ({ items: s.items.filter((i) => i.id !== id) })),
+        set((s) => ({
+          items: s.items.filter((i) => i.id !== id),
+        })),
 
       updateQuantity: (id, quantity) =>
         set((s) => ({

@@ -4,14 +4,13 @@ import { useState } from "react";
 import { useCart, CartItem } from "@/store/cart";
 import { useRouter } from "next/navigation";
 import { CustomerInfo } from "./CheckoutForm";
-import PaystackPop from "@paystack/inline-js";
 
 type Props = {
   customerInfo: CustomerInfo;
   items: CartItem[];
   currency: "NGN" | "USD";
   grandTotal: number;
-  deliveryFee: number;
+  deliveryFeeNGN: number;
   onValidate: () => boolean;
 };
 
@@ -20,7 +19,7 @@ export function PaystackButton({
   items,
   currency,
   grandTotal,
-  deliveryFee,
+  deliveryFeeNGN,
   onValidate,
 }: Props) {
   const [loading, setLoading] = useState(false);
@@ -40,12 +39,13 @@ export function PaystackButton({
           items,
           currency,
           grandTotal,
-          deliveryFee,
+          deliveryFeeNGN,
         }),
       });
 
       const { reference, accessCode } = await res.json();
 
+      const PaystackPop = (await import("@paystack/inline-js")).default;
       const paystack = new PaystackPop();
 
       paystack.resumeTransaction(accessCode, {
@@ -67,7 +67,7 @@ export function PaystackButton({
     <button
       onClick={handlePay}
       disabled={loading}
-      className="w-full py-4 text-sm tracking-[0.2em] uppercase font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+      className="w-full py-4 text-sm tracking-[0.2em] uppercase font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-85"
       style={{ background: "var(--body)", color: "var(--page)" }}
     >
       {loading ? "Processing..." : "Pay now"}

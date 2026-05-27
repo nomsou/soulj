@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 
-export const metadata = {
-  title: "Shop — Soulj",
-  description: "Drop 001. Abuja.",
+export const metadata: Metadata = {
+  title: "Shop",
+  description:
+    "Shop Soulj Drop 001 — plain tees and longsleeves. Abuja streetwear.",
 };
 
 export default async function ShopPage() {

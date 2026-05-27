@@ -13,11 +13,10 @@ export function CartPage() {
 
   const fmt = (n: number) => (currency === "NGN" ? formatNGN(n) : formatUSD(n));
 
-  const deliveryFee = 2500;
-  const deliveryDisplay =
-    currency === "NGN" ? formatNGN(deliveryFee) : formatUSD(deliveryFee / 1500);
-  const grandTotal =
-    currency === "NGN" ? total() + deliveryFee : total() + deliveryFee / 1500;
+  const deliveryFeeNGN = 2500;
+  const deliveryFeeUSD = 2;
+  const deliveryFee = currency === "NGN" ? deliveryFeeNGN : deliveryFeeUSD;
+  const grandTotal = total() + deliveryFee;
 
   if (items.length === 0) {
     return (
@@ -33,7 +32,7 @@ export function CartPage() {
         </p>
         <Link
           href="/shop"
-          className="text-xs tracking-[0.2em] uppercase border px-6 py-3 transition-all"
+          className="text-xs tracking-[0.2em] uppercase border px-6 py-3 transition-all hover:opacity-70"
           style={{ borderColor: "var(--body)", color: "var(--body)" }}
         >
           Back to shop
@@ -48,7 +47,8 @@ export function CartPage() {
         items={items}
         currency={currency}
         subtotal={total()}
-        deliveryFee={deliveryFee}
+        deliveryFeeNGN={deliveryFeeNGN}
+        deliveryFeeUSD={deliveryFeeUSD}
         grandTotal={grandTotal}
         onBack={() => setCheckingOut(false)}
       />
@@ -68,20 +68,18 @@ export function CartPage() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-16">
-        {/* items */}
         <div className="space-y-0">
           {items.map((item, i) => (
             <div
               key={item.id}
               className="flex gap-5 py-6 border-t"
               style={{
-                borderColor: "var(--card)",
+                borderColor: "var(--border)",
                 ...(i === items.length - 1 && {
-                  borderBottom: "0.5px solid var(--card)",
+                  borderBottom: `0.5px solid var(--border)`,
                 }),
               }}
             >
-              {/* image */}
               <div
                 className="w-24 h-32 shrink-0 flex items-center justify-center"
                 style={{
@@ -107,7 +105,6 @@ export function CartPage() {
                 )}
               </div>
 
-              {/* info */}
               <div className="flex-1 flex flex-col justify-between">
                 <div className="flex items-start justify-between">
                   <div>
@@ -134,10 +131,9 @@ export function CartPage() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  {/* quantity */}
                   <div
                     className="flex items-center gap-4 border px-3 py-2"
-                    style={{ borderColor: "var(--card)" }}
+                    style={{ borderColor: "var(--border)" }}
                   >
                     <button
                       onClick={() =>
@@ -180,11 +176,10 @@ export function CartPage() {
           ))}
         </div>
 
-        {/* summary */}
-        <div className="space-y-6">
+        <div>
           <div
             className="border p-6 space-y-4"
-            style={{ borderColor: "var(--card)" }}
+            style={{ borderColor: "var(--border)" }}
           >
             <p
               className="text-xs tracking-[0.2em] uppercase font-medium"
@@ -200,11 +195,11 @@ export function CartPage() {
               </div>
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Delivery</span>
-                <span style={{ color: "var(--body)" }}>{deliveryDisplay}</span>
+                <span style={{ color: "var(--body)" }}>{fmt(deliveryFee)}</span>
               </div>
               <div
                 className="flex justify-between text-sm font-medium pt-4 border-t"
-                style={{ borderColor: "var(--card)" }}
+                style={{ borderColor: "var(--border)" }}
               >
                 <span style={{ color: "var(--body)" }}>Total</span>
                 <span style={{ color: "var(--body)" }}>{fmt(grandTotal)}</span>
@@ -213,7 +208,7 @@ export function CartPage() {
 
             <button
               onClick={() => setCheckingOut(true)}
-              className="w-full py-4 text-sm tracking-[0.2em] uppercase font-medium transition-all"
+              className="w-full py-4 text-sm tracking-[0.2em] uppercase font-medium transition-all hover:opacity-85"
               style={{ background: "var(--body)", color: "var(--page)" }}
             >
               Checkout
@@ -221,7 +216,7 @@ export function CartPage() {
 
             <Link
               href="/shop"
-              className="block text-center text-xs tracking-[0.15em] uppercase pt-2 transition-all"
+              className="block text-center text-xs tracking-[0.15em] uppercase pt-2 transition-all hover:opacity-60"
               style={{ color: "var(--muted)" }}
             >
               Continue shopping

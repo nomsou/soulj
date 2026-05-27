@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useCart, CartItem } from "@/store/cart";
+import { CartItem } from "@/store/cart";
 import { formatNGN, formatUSD } from "@/lib/utils";
 import { PaystackButton } from "./PaystackButton";
 import { ArrowLeft } from "lucide-react";
@@ -10,7 +10,8 @@ type Props = {
   items: CartItem[];
   currency: "NGN" | "USD";
   subtotal: number;
-  deliveryFee: number;
+  deliveryFeeNGN: number;
+  deliveryFeeUSD: number;
   grandTotal: number;
   onBack: () => void;
 };
@@ -29,7 +30,8 @@ export function CheckoutForm({
   items,
   currency,
   subtotal,
-  deliveryFee,
+  deliveryFeeNGN,
+  deliveryFeeUSD,
   grandTotal,
   onBack,
 }: Props) {
@@ -67,7 +69,7 @@ export function CheckoutForm({
     type = "text",
     placeholder = "",
   ) => (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <label
         className="text-xs tracking-[0.12em] uppercase"
         style={{ color: "var(--muted)" }}
@@ -82,7 +84,7 @@ export function CheckoutForm({
         className="w-full px-4 py-3 text-sm outline-none border transition-all"
         style={{
           background: "transparent",
-          borderColor: errors[key] ? "#E24B4A" : "var(--card)",
+          borderColor: errors[key] ? "#E24B4A" : "var(--border)",
           color: "var(--body)",
         }}
       />
@@ -102,14 +104,13 @@ export function CheckoutForm({
       <button
         onClick={onBack}
         className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase mb-10 transition-opacity hover:opacity-60"
-        style={{ color: "var(--muted)" }}
+        style={{ color: "var(--muted)", background: "none", border: "none" }}
       >
         <ArrowLeft size={14} strokeWidth={1.5} />
         Back to cart
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-16">
-        {/* form */}
         <div className="space-y-8">
           <div>
             <p
@@ -143,11 +144,10 @@ export function CheckoutForm({
           </div>
         </div>
 
-        {/* summary + pay */}
         <div>
           <div
             className="border p-6 space-y-4"
-            style={{ borderColor: "var(--card)" }}
+            style={{ borderColor: "var(--border)" }}
           >
             <p
               className="text-xs tracking-[0.2em] uppercase font-medium"
@@ -174,7 +174,7 @@ export function CheckoutForm({
 
             <div
               className="space-y-2 pt-4 border-t"
-              style={{ borderColor: "var(--card)" }}
+              style={{ borderColor: "var(--border)" }}
             >
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Subtotal</span>
@@ -184,13 +184,13 @@ export function CheckoutForm({
                 <span style={{ color: "var(--muted)" }}>Delivery</span>
                 <span style={{ color: "var(--body)" }}>
                   {currency === "NGN"
-                    ? formatNGN(deliveryFee)
-                    : formatUSD(deliveryFee / 1500)}
+                    ? formatNGN(deliveryFeeNGN)
+                    : formatUSD(deliveryFeeUSD)}
                 </span>
               </div>
               <div
                 className="flex justify-between text-sm font-medium pt-3 border-t"
-                style={{ borderColor: "var(--card)" }}
+                style={{ borderColor: "var(--border)" }}
               >
                 <span style={{ color: "var(--body)" }}>Total</span>
                 <span style={{ color: "var(--body)" }}>{fmt(grandTotal)}</span>
@@ -202,7 +202,7 @@ export function CheckoutForm({
               items={items}
               currency={currency}
               grandTotal={grandTotal}
-              deliveryFee={deliveryFee}
+              deliveryFeeNGN={deliveryFeeNGN}
               onValidate={validate}
             />
           </div>

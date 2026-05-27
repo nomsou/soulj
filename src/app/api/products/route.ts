@@ -6,3 +6,10 @@ export async function POST(req: NextRequest) {
   const product = await prisma.product.create({ data });
   return NextResponse.json(product);
 }
+
+export async function GET() {
+  const products = await prisma.product.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+  return NextResponse.json(products);
+}
