@@ -60,7 +60,20 @@ export function HeroVideo() {
         showPrompt && (
           <button
             onClick={enableAudio}
-            className="absolute mt-14 top-6 right-6 z-20 px-4 py-2 text-xs tracking-[0.2em] uppercase bg-black/40 text-white backdrop-blur rounded-full hover:bg-black/60 transition"
+            className="
+  absolute top-16 right-6 z-20
+  px-4 py-2 text-xs tracking-[0.2em] uppercase
+  text-white
+
+  bg-black/70
+  backdrop-blur-md
+  border border-white/20
+  rounded-full
+
+  shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+
+  sound-pulse
+"
           >
             Tap to enable sound
           </button>
@@ -68,7 +81,7 @@ export function HeroVideo() {
       ) : (
         <button
           onClick={toggleMute}
-          className="absolute mt-14 top-6 right-6 z-20 p-2 rounded-full bg-black/40 backdrop-blur text-white hover:bg-black/60 transition"
+          className="absolute top-16 right-6 z-20 p-2 rounded-full bg-black/40 backdrop-blur text-white hover:bg-black/60 transition"
           aria-label="Toggle sound"
         >
           {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
