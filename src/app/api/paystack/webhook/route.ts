@@ -21,9 +21,17 @@ export async function POST(req: NextRequest) {
   if (event.event === "charge.success") {
     const reference = event.data.reference;
 
+    // 1. Mark order as paid
     const order = await prisma.order.update({
       where: { reference },
       data: { status: "PAID" },
+    });
+
+    // 2. AUTO-SUBSCRIBE: Upsert the customer's email into the Subscriber table
+    await prisma.subscriber.upsert({
+      where: { email: order.email },
+      update: {}, // If they already exist, do absolutely nothing
+      create: { email: order.email }, // If they are new, create the row
     });
 
     const items = order.items as any[];
@@ -170,6 +178,5 @@ export async function POST(req: NextRequest) {
   //     });
   //   }
   // }
-
   return NextResponse.json({ received: true });
 }
