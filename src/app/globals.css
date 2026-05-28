@@ -98,3 +98,53 @@ html {
 .sound-pulse {
   animation: sound-pulse 2s ease-in-out infinite;
 }
+
+@layer utilities {
+  @keyframes cinematic-expand {
+    0% {
+      letter-spacing: -0.1em;
+      opacity: 0;
+      filter: blur(4px);
+    }
+    40% {
+      opacity: 1;
+      filter: blur(0px);
+    }
+    100% {
+      letter-spacing: 0.5em;
+      opacity: 0;
+      filter: blur(2px);
+    }
+  }
+
+  @keyframes continuous-spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      opacity: 0.15;
+    }
+    50% {
+      opacity: 0.4;
+    }
+  }
+
+  .animate-cinematic-text {
+    animation: cinematic-expand 2.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+  }
+
+  .animate-portal-spin {
+    animation: continuous-spin 3s linear infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+}

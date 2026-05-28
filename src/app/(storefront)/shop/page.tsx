@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const metadata: Metadata = {
   title: "Shop",
   description:
@@ -9,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ShopPage() {
+  await delay(3000);
   const products = await prisma.product.findMany({
     where: { published: true },
     orderBy: { createdAt: "desc" },
