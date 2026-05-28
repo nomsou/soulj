@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { formatNGN } from "@/lib/utils";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { ClearCartTrigger } from "@/components/cart/ClearCartTrigger";
 
 export const metadata: Metadata = { title: "Order Confirmed" };
 
@@ -26,6 +27,8 @@ export default async function OrderConfirmation({
       className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
       style={{ background: "var(--page)" }}
     >
+      <ClearCartTrigger />
+
       <div className="w-full max-w-md space-y-10">
         <div className="text-center space-y-3">
           <p

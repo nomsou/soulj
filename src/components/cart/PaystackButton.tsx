@@ -21,7 +21,6 @@ export function PaystackButton({
   onValidate,
 }: Props) {
   const [loading, setLoading] = useState(false);
-  const { clearCart } = useCart();
   const router = useRouter();
 
   const handlePay = async () => {
@@ -47,7 +46,7 @@ export function PaystackButton({
 
       paystack.resumeTransaction(accessCode, {
         onSuccess: async () => {
-          clearCart();
+          // Navigating forward immediately; cart cleanup shifts securely to the next screen
           router.push(`/order/${reference}`);
         },
         onCancel: () => {

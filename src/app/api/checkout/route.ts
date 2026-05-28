@@ -27,7 +27,16 @@ export async function POST(req: NextRequest) {
 
     const amountInKobo = Math.round(finalGrandTotalNGN * 100);
 
-    const reference = `SOULJ-${Date.now()}-${Math.random().toString(36).substring(2, 7).toUpperCase()}`;
+    const generateShortRef = () => {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let result = "";
+      for (let i = 0; i < 8; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      return `SLJ-${result}`;
+    };
+
+    const reference = generateShortRef();
 
     const res = await fetch("https://api.paystack.co/transaction/initialize", {
       method: "POST",

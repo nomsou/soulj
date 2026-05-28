@@ -35,8 +35,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const prevImage = () => {
     setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
-
-  const handleAddToCart = () => {
+  const handleAddToCart = (showToast = true) => {
     addItem({
       id: product.id,
       name: product.name,
@@ -48,7 +47,14 @@ export function ProductDetail({ product }: { product: Product }) {
       quantity: 1,
     });
 
-    toast.success(`${product.name} added to cart.`);
+    if (showToast) {
+      toast.success(`${product.name} added to cart.`, {
+        action: {
+          label: "View Cart",
+          onClick: () => router.push("/cart"),
+        },
+      });
+    }
   };
 
   return (
@@ -180,7 +186,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
           <div className="space-y-3">
             <button
-              onClick={handleAddToCart}
+              onClick={() => handleAddToCart(true)}
               disabled={outOfStock}
               className="w-full py-4 text-sm tracking-[0.2em] uppercase font-medium transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: "var(--body)", color: "var(--page)" }}
@@ -190,7 +196,7 @@ export function ProductDetail({ product }: { product: Product }) {
 
             <button
               onClick={() => {
-                handleAddToCart();
+                handleAddToCart(false);
                 router.push("/cart");
               }}
               disabled={outOfStock}
