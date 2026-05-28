@@ -5,6 +5,7 @@ import { useCart } from "@/store/cart";
 import { formatNGN, formatUSD } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type Product = {
   id: string;
@@ -32,6 +33,16 @@ export function ProductDetail({ product }: { product: Product }) {
   const isBlack = product.color.toLowerCase() === "black";
   const outOfStock = product.stock === 0;
 
+  const images = product.images ?? [];
+
+  const nextImage = () => {
+    setSelectedImage((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
   const handleAddToCart = () => {
     addItem({
       id: product.id,
@@ -41,9 +52,10 @@ export function ProductDetail({ product }: { product: Product }) {
       size: product.size,
       priceNGN: product.priceNGN,
       priceUSD: product.priceUSD,
-      image: product.images[0] ?? "",
+      image: images[0] ?? "",
       quantity: 1,
     });
+
     toast.success(`${product.name} added to cart.`);
   };
 
@@ -53,19 +65,18 @@ export function ProductDetail({ product }: { product: Product }) {
       style={{ background: "var(--page)" }}
     >
       <div className="px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start py-10">
-        {/* images */}
         <div className="space-y-3">
           <div
-            className="aspect-[3/4] w-full overflow-hidden flex items-center justify-center"
+            className="relative aspect-[3/4] w-full overflow-hidden flex items-center justify-center"
             style={{
               background: isBlack ? "var(--card-dark)" : "var(--card)",
             }}
           >
-            {product.images[selectedImage] ? (
+            {images[selectedImage] ? (
               <img
-                src={product.images[selectedImage]}
+                src={images[selectedImage]}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-all duration-300"
               />
             ) : (
               <span
@@ -75,11 +86,29 @@ export function ProductDetail({ product }: { product: Product }) {
                 Soulj
               </span>
             )}
+
+            {images.length > 1 && (
+              <>
+                <button
+                  onClick={prevImage}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+
+                <button
+                  onClick={nextImage}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white p-2"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </>
+            )}
           </div>
 
-          {product.images.length > 1 && (
+          {images.length > 1 && (
             <div className="flex gap-2 flex-wrap">
-              {product.images.map((img, i) => (
+              {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
@@ -88,7 +117,6 @@ export function ProductDetail({ product }: { product: Product }) {
                     borderColor:
                       selectedImage === i ? "var(--body)" : "transparent",
                   }}
-                  aria-label={`View image ${i + 1}`}
                 >
                   <img
                     src={img}
@@ -101,7 +129,6 @@ export function ProductDetail({ product }: { product: Product }) {
           )}
         </div>
 
-        {/* details */}
         <div className="md:pt-4 space-y-8">
           <div>
             <p
@@ -110,6 +137,7 @@ export function ProductDetail({ product }: { product: Product }) {
             >
               Soulj — Drop 001
             </p>
+
             <h1
               className="text-3xl font-medium mb-4"
               style={{ color: "var(--body)" }}
@@ -124,18 +152,19 @@ export function ProductDetail({ product }: { product: Product }) {
               >
                 {price}
               </p>
+
               <div className="flex gap-2">
                 {(["NGN", "USD"] as const).map((c) => (
                   <button
                     key={c}
                     onClick={() => setCurrency(c)}
-                    className="text-[10px] tracking-[0.12em] uppercase px-2 py-1 border transition-all"
+                    className="text-[10px] tracking-[0.12em] uppercase px-2 py-1 border"
                     style={{
                       borderColor:
                         currency === c ? "var(--body)" : "var(--muted)",
-                      color: currency === c ? "var(--page)" : "var(--muted)",
                       background:
                         currency === c ? "var(--body)" : "transparent",
+                      color: currency === c ? "var(--page)" : "var(--muted)",
                     }}
                   >
                     {c}
