@@ -1,21 +1,17 @@
 "use client";
 
 import { useCart } from "@/store/cart";
-import { formatNGN, formatUSD } from "@/lib/utils";
+import { formatNGN } from "@/lib/utils";
 import Link from "next/link";
 import { Minus, Plus, X } from "lucide-react";
 import { CheckoutForm } from "./CheckoutForm";
 import { useState } from "react";
 
 export function CartPage() {
-  const { items, removeItem, updateQuantity, currency, total } = useCart();
+  const { items, removeItem, updateQuantity, total } = useCart();
   const [checkingOut, setCheckingOut] = useState(false);
 
-  const fmt = (n: number) => (currency === "NGN" ? formatNGN(n) : formatUSD(n));
-
-  const deliveryFeeNGN = 2500;
-  const deliveryFeeUSD = 2;
-  const deliveryFee = currency === "NGN" ? deliveryFeeNGN : deliveryFeeUSD;
+  const deliveryFee = 2500;
   const grandTotal = total() + deliveryFee;
 
   if (items.length === 0) {
@@ -45,10 +41,8 @@ export function CartPage() {
     return (
       <CheckoutForm
         items={items}
-        currency={currency}
         subtotal={total()}
-        deliveryFeeNGN={deliveryFeeNGN}
-        deliveryFeeUSD={deliveryFeeUSD}
+        deliveryFeeNGN={deliveryFee}
         grandTotal={grandTotal}
         onBack={() => setCheckingOut(false)}
       />
@@ -160,15 +154,11 @@ export function CartPage() {
                       <Plus size={12} strokeWidth={1.5} />
                     </button>
                   </div>
-
                   <p
                     className="text-sm font-medium"
                     style={{ color: "var(--body)" }}
                   >
-                    {fmt(
-                      (currency === "NGN" ? item.priceNGN : item.priceUSD) *
-                        item.quantity,
-                    )}
+                    {formatNGN(item.priceNGN * item.quantity)}
                   </p>
                 </div>
               </div>
@@ -187,22 +177,27 @@ export function CartPage() {
             >
               Order summary
             </p>
-
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Subtotal</span>
-                <span style={{ color: "var(--body)" }}>{fmt(total())}</span>
+                <span style={{ color: "var(--body)" }}>
+                  {formatNGN(total())}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Delivery</span>
-                <span style={{ color: "var(--body)" }}>{fmt(deliveryFee)}</span>
+                <span style={{ color: "var(--body)" }}>
+                  {formatNGN(deliveryFee)}
+                </span>
               </div>
               <div
                 className="flex justify-between text-sm font-medium pt-4 border-t"
                 style={{ borderColor: "var(--border)" }}
               >
                 <span style={{ color: "var(--body)" }}>Total</span>
-                <span style={{ color: "var(--body)" }}>{fmt(grandTotal)}</span>
+                <span style={{ color: "var(--body)" }}>
+                  {formatNGN(grandTotal)}
+                </span>
               </div>
             </div>
 
@@ -213,7 +208,6 @@ export function CartPage() {
             >
               Checkout
             </button>
-
             <Link
               href="/shop"
               className="block text-center text-xs tracking-[0.15em] uppercase pt-2 transition-all hover:opacity-60"

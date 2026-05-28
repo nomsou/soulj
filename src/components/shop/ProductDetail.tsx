@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useCart } from "@/store/cart";
-import { formatNGN, formatUSD } from "@/lib/utils";
+import { formatNGN } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -15,24 +15,17 @@ type Product = {
   color: string;
   size: string;
   priceNGN: number;
-  priceUSD: number;
   stock: number;
   images: string[];
 };
 
 export function ProductDetail({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(0);
-  const { addItem, currency, setCurrency } = useCart();
+  const { addItem } = useCart();
   const router = useRouter();
-
-  const price =
-    currency === "NGN"
-      ? formatNGN(product.priceNGN)
-      : formatUSD(product.priceUSD);
 
   const isBlack = product.color.toLowerCase() === "black";
   const outOfStock = product.stock === 0;
-
   const images = product.images ?? [];
 
   const nextImage = () => {
@@ -51,7 +44,6 @@ export function ProductDetail({ product }: { product: Product }) {
       color: product.color,
       size: product.size,
       priceNGN: product.priceNGN,
-      priceUSD: product.priceUSD,
       image: images[0] ?? "",
       quantity: 1,
     });
@@ -150,27 +142,8 @@ export function ProductDetail({ product }: { product: Product }) {
                 className="text-2xl font-medium"
                 style={{ color: "var(--body)" }}
               >
-                {price}
+                {formatNGN(product.priceNGN)}
               </p>
-
-              <div className="flex gap-2">
-                {(["NGN", "USD"] as const).map((c) => (
-                  <button
-                    key={c}
-                    onClick={() => setCurrency(c)}
-                    className="text-[10px] tracking-[0.12em] uppercase px-2 py-1 border"
-                    style={{
-                      borderColor:
-                        currency === c ? "var(--body)" : "var(--muted)",
-                      background:
-                        currency === c ? "var(--body)" : "transparent",
-                      color: currency === c ? "var(--page)" : "var(--muted)",
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
-              </div>
             </div>
           </div>
 

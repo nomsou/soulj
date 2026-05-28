@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { formatNGN, formatUSD } from "@/lib/utils";
-import { useCart } from "@/store/cart";
+import { formatNGN } from "@/lib/utils";
 
 type Props = {
   product: {
@@ -12,29 +11,19 @@ type Props = {
     color: string;
     size: string;
     priceNGN: number;
-    priceUSD: number;
     images: string[];
     stock: number;
   };
 };
 
 export function ProductCard({ product }: Props) {
-  const currency = useCart((s) => s.currency);
-
-  const price =
-    currency === "NGN"
-      ? formatNGN(product.priceNGN)
-      : formatUSD(product.priceUSD);
-
   const isBlack = product.color.toLowerCase() === "black";
 
   return (
     <Link href={`/shop/${product.slug}`} className="group block">
       <div
         className="aspect-[3/4] overflow-hidden mb-4 flex items-center justify-center"
-        style={{
-          background: isBlack ? "var(--card-dark)" : "var(--card)",
-        }}
+        style={{ background: isBlack ? "var(--card-dark)" : "var(--card)" }}
       >
         {product.images[0] ? (
           <img
@@ -51,7 +40,6 @@ export function ProductCard({ product }: Props) {
           </span>
         )}
       </div>
-
       <div className="flex items-start justify-between gap-4">
         <div>
           <p
@@ -76,7 +64,7 @@ export function ProductCard({ product }: Props) {
           )}
         </div>
         <p className="text-sm shrink-0" style={{ color: "var(--muted)" }}>
-          {price}
+          {formatNGN(product.priceNGN)}
         </p>
       </div>
     </Link>

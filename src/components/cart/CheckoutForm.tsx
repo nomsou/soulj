@@ -2,16 +2,14 @@
 
 import { useState } from "react";
 import { CartItem } from "@/store/cart";
-import { formatNGN, formatUSD } from "@/lib/utils";
+import { formatNGN } from "@/lib/utils";
 import { PaystackButton } from "./PaystackButton";
 import { ArrowLeft } from "lucide-react";
 
 type Props = {
   items: CartItem[];
-  currency: "NGN" | "USD";
   subtotal: number;
   deliveryFeeNGN: number;
-  deliveryFeeUSD: number;
   grandTotal: number;
   onBack: () => void;
 };
@@ -28,15 +26,11 @@ export type CustomerInfo = {
 
 export function CheckoutForm({
   items,
-  currency,
   subtotal,
   deliveryFeeNGN,
-  deliveryFeeUSD,
   grandTotal,
   onBack,
 }: Props) {
-  const fmt = (n: number) => (currency === "NGN" ? formatNGN(n) : formatUSD(n));
-
   const [info, setInfo] = useState<CustomerInfo>({
     firstName: "",
     lastName: "",
@@ -46,7 +40,6 @@ export function CheckoutForm({
     city: "",
     state: "",
   });
-
   const [errors, setErrors] = useState<Partial<CustomerInfo>>({});
 
   const validate = () => {
@@ -106,8 +99,7 @@ export function CheckoutForm({
         className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase mb-10 transition-opacity hover:opacity-60"
         style={{ color: "var(--muted)", background: "none", border: "none" }}
       >
-        <ArrowLeft size={14} strokeWidth={1.5} />
-        Back to cart
+        <ArrowLeft size={14} strokeWidth={1.5} /> Back to cart
       </button>
 
       <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-16">
@@ -126,7 +118,6 @@ export function CheckoutForm({
               {field("phone", "Phone", "tel", "+234")}
             </div>
           </div>
-
           <div>
             <p
               className="text-xs tracking-[0.25em] uppercase mb-6"
@@ -155,7 +146,6 @@ export function CheckoutForm({
             >
               Order summary
             </p>
-
             <div className="space-y-2">
               {items.map((item) => (
                 <div key={item.id} className="flex justify-between text-sm">
@@ -163,29 +153,25 @@ export function CheckoutForm({
                     {item.name} × {item.quantity}
                   </span>
                   <span style={{ color: "var(--body)" }}>
-                    {fmt(
-                      (currency === "NGN" ? item.priceNGN : item.priceUSD) *
-                        item.quantity,
-                    )}
+                    {formatNGN(item.priceNGN * item.quantity)}
                   </span>
                 </div>
               ))}
             </div>
-
             <div
               className="space-y-2 pt-4 border-t"
               style={{ borderColor: "var(--border)" }}
             >
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Subtotal</span>
-                <span style={{ color: "var(--body)" }}>{fmt(subtotal)}</span>
+                <span style={{ color: "var(--body)" }}>
+                  {formatNGN(subtotal)}
+                </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Delivery</span>
                 <span style={{ color: "var(--body)" }}>
-                  {currency === "NGN"
-                    ? formatNGN(deliveryFeeNGN)
-                    : formatUSD(deliveryFeeUSD)}
+                  {formatNGN(deliveryFeeNGN)}
                 </span>
               </div>
               <div
@@ -193,14 +179,14 @@ export function CheckoutForm({
                 style={{ borderColor: "var(--border)" }}
               >
                 <span style={{ color: "var(--body)" }}>Total</span>
-                <span style={{ color: "var(--body)" }}>{fmt(grandTotal)}</span>
+                <span style={{ color: "var(--body)" }}>
+                  {formatNGN(grandTotal)}
+                </span>
               </div>
             </div>
-
             <PaystackButton
               customerInfo={info}
               items={items}
-              currency={currency}
               grandTotal={grandTotal}
               deliveryFeeNGN={deliveryFeeNGN}
               onValidate={validate}

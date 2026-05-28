@@ -11,7 +11,6 @@ type ProductData = {
   slug: string;
   description: string;
   priceNGN: number;
-  priceUSD: number;
   color: string;
   size: string;
   stock: number;
@@ -30,7 +29,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           slug: initial.slug ?? "",
           description: initial.description ?? "",
           priceNGN: initial.priceNGN ?? 0,
-          priceUSD: initial.priceUSD ?? 0,
           color: initial.color ?? "Black",
           size: initial.size ?? "M",
           stock: initial.stock ?? 0,
@@ -43,7 +41,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           slug: "",
           description: "",
           priceNGN: 0,
-          priceUSD: 0,
           color: "Black",
           size: "M",
           stock: 0,
@@ -64,7 +61,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
 
-  // MOVE SELECTED IMAGE TO FIRST POSITION (COVER)
   const makeCover = (url: string) => {
     setForm((prev) => ({
       ...prev,
@@ -111,7 +107,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
       </h1>
 
       <div className="space-y-5">
-        {/* NAME */}
         <div>
           <label className={labelCls}>Name</label>
           <input
@@ -125,7 +120,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
-        {/* SLUG */}
         <div>
           <label className={labelCls}>Slug</label>
           <input
@@ -136,7 +130,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
-        {/* DESCRIPTION */}
         <div>
           <label className={labelCls}>Description</label>
           <textarea
@@ -148,29 +141,15 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
-        {/* PRICES */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={labelCls}>Price (NGN)</label>
-            <input
-              type="number"
-              className={inputCls}
-              style={inputStyle}
-              value={form.priceNGN}
-              onChange={(e) => set("priceNGN", Number(e.target.value))}
-            />
-          </div>
-
-          <div>
-            <label className={labelCls}>Price (USD)</label>
-            <input
-              type="number"
-              className={inputCls}
-              style={inputStyle}
-              value={form.priceUSD}
-              onChange={(e) => set("priceUSD", Number(e.target.value))}
-            />
-          </div>
+        <div>
+          <label className={labelCls}>Price (NGN)</label>
+          <input
+            type="number"
+            className={inputCls}
+            style={inputStyle}
+            value={form.priceNGN}
+            onChange={(e) => set("priceNGN", Number(e.target.value))}
+          />
         </div>
 
         {/* COLOR + SIZE */}
@@ -205,7 +184,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           </div>
         </div>
 
-        {/* STOCK */}
         <div>
           <label className={labelCls}>Stock</label>
           <input
@@ -217,7 +195,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
-        {/* IMAGES */}
         <div>
           <label className={labelCls}>Product images (first is cover)</label>
 
@@ -234,7 +211,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
                       className="w-full h-full object-cover"
                     />
 
-                    {/* DELETE */}
                     <button
                       type="button"
                       onClick={() => removeImage(url)}
@@ -243,7 +219,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
                       <X size={10} color="white" />
                     </button>
 
-                    {/* MAKE COVER */}
                     {i !== 0 && (
                       <button
                         type="button"
@@ -254,7 +229,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
                       </button>
                     )}
 
-                    {/* COVER BADGE */}
                     {isCover && (
                       <div className="absolute top-1 left-1 text-[9px] px-1 py-0.5 bg-green-600 text-white">
                         Cover

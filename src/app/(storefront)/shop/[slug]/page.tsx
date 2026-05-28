@@ -28,18 +28,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ProductPage({ params }: { params: any }) {
   const { slug } = await params;
-
-  const product = await prisma.product.findUnique({
-    where: { slug },
-  });
-
-  if (!product || !product.published) notFound();
-
+  const product = await prisma.product.findUnique({ where: { slug } });
+  if (!product) notFound();
   return <ProductDetail product={product} />;
 }

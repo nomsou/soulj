@@ -8,7 +8,6 @@ import { CustomerInfo } from "./CheckoutForm";
 type Props = {
   customerInfo: CustomerInfo;
   items: CartItem[];
-  currency: "NGN" | "USD";
   grandTotal: number;
   deliveryFeeNGN: number;
   onValidate: () => boolean;
@@ -17,7 +16,6 @@ type Props = {
 export function PaystackButton({
   customerInfo,
   items,
-  currency,
   grandTotal,
   deliveryFeeNGN,
   onValidate,
@@ -37,7 +35,6 @@ export function PaystackButton({
         body: JSON.stringify({
           customerInfo,
           items,
-          currency,
           grandTotal,
           deliveryFeeNGN,
         }),

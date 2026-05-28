@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { formatNGN, formatUSD } from "@/lib/utils";
+import { formatNGN } from "@/lib/utils";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -20,8 +20,6 @@ export default async function OrderConfirmation({
   if (!order) notFound();
 
   const items = order.items as any[];
-  const fmt = (n: number) =>
-    order.currency === "NGN" ? formatNGN(n) : formatUSD(n);
 
   return (
     <div
@@ -64,10 +62,7 @@ export default async function OrderConfirmation({
                   {item.name} — {item.color} × {item.quantity}
                 </span>
                 <span style={{ color: "var(--body)" }}>
-                  {fmt(
-                    (order.currency === "NGN" ? item.priceNGN : item.priceUSD) *
-                      item.quantity,
-                  )}
+                  {formatNGN(item.priceNGN * item.quantity)}
                 </span>
               </div>
             ))}
@@ -80,13 +75,13 @@ export default async function OrderConfirmation({
             <div className="flex justify-between text-sm">
               <span style={{ color: "var(--muted)" }}>Delivery</span>
               <span style={{ color: "var(--body)" }}>
-                {fmt(order.deliveryFee)}
+                {formatNGN(order.deliveryFee)}
               </span>
             </div>
             <div className="flex justify-between text-sm font-medium">
               <span style={{ color: "var(--body)" }}>Total</span>
               <span style={{ color: "var(--body)" }}>
-                {fmt(order.totalNGN)}
+                {formatNGN(order.totalNGN)}
               </span>
             </div>
           </div>

@@ -23,7 +23,6 @@ export default async function EditProduct({
         slug: product.slug,
         description: product.description ?? "",
         priceNGN: product.priceNGN,
-        priceUSD: product.priceUSD,
         color: product.color,
         size: product.size,
         stock: product.stock,
