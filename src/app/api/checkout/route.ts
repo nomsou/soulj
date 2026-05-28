@@ -1,5 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import crypto from "crypto"
+
+const getShippingFee = (stateName: string): number => {
+  const normalizedState = stateName.toLowerCase().trim();
+
+  if (normalizedState === "federal capital territory") {
+    return 2500;
+  }
+  if (normalizedState === "lagos") {
+    return 4500;
+  }
+  if (normalizedState === "enugu") {
+    return 4500;
+  }
+
+  return 2500;
+};
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,21 +39,13 @@ export async function POST(req: NextRequest) {
       calculatedSubtotalNGN += dbProduct.priceNGN * clientItem.quantity;
     }
 
-    const deliveryFeeNGN = 2500;
+    const deliveryFeeNGN = getShippingFee(customerInfo.state);
     const finalGrandTotalNGN = calculatedSubtotalNGN + deliveryFeeNGN;
 
     const amountInKobo = Math.round(finalGrandTotalNGN * 100);
 
-    const generateShortRef = () => {
-      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      let result = "";
-      for (let i = 0; i < 8; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return `SLJ-${result}`;
-    };
-
-    const reference = generateShortRef();
+    const cryptoSlice = crypto.randomBytes(3).toString("hex").toUpperCase(); // e.g. B8F3A1
+    const reference = `SOULJ-${cryptoSlice}`;
 
     const res = await fetch("https://api.paystack.co/transaction/initialize", {
       method: "POST",

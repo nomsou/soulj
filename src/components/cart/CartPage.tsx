@@ -11,8 +11,8 @@ export function CartPage() {
   const { items, removeItem, updateQuantity, total } = useCart();
   const [checkingOut, setCheckingOut] = useState(false);
 
-  const deliveryFee = 2500;
-  const grandTotal = total() + deliveryFee;
+  const baseDefaultPlaceholderFee = 2500;
+  const initialEstimatedGrandTotal = total() + baseDefaultPlaceholderFee;
 
   if (items.length === 0) {
     return (
@@ -42,8 +42,6 @@ export function CartPage() {
       <CheckoutForm
         items={items}
         subtotal={total()}
-        deliveryFeeNGN={deliveryFee}
-        grandTotal={grandTotal}
         onBack={() => setCheckingOut(false)}
       />
     );
@@ -187,7 +185,7 @@ export function CartPage() {
               <div className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>Delivery</span>
                 <span style={{ color: "var(--body)" }}>
-                  {formatNGN(deliveryFee)}
+                  {formatNGN(baseDefaultPlaceholderFee)}
                 </span>
               </div>
               <div
@@ -196,7 +194,7 @@ export function CartPage() {
               >
                 <span style={{ color: "var(--body)" }}>Total</span>
                 <span style={{ color: "var(--body)" }}>
-                  {formatNGN(grandTotal)}
+                  {formatNGN(initialEstimatedGrandTotal)}
                 </span>
               </div>
             </div>

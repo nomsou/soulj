@@ -12,11 +12,11 @@ const sections = [
     content: [
       "We currently ship within Nigeria only.",
       "All orders are shipped via a trusted courier service from Abuja.",
-      "Flat delivery fee of ₦2,500 applies to all orders, regardless of quantity.",
+      "Flat delivery fee of ₦2,500 applies exclusively to orders within Abuja FCT.",
+      "For deliveries to other states, shipping fees are calculated at checkout depending on the courier service rate.",
       "Orders are processed within 1–2 business days after payment is confirmed.",
-      "Delivery typically takes 2–5 business days depending on your location within Nigeria.",
+      "Delivery typically takes 1–2 business days within Abuja, and 2–5 business days for other states depending on your location.",
       "You will receive a notification with tracking details once your order has been dispatched.",
-      "For Abuja FCT deliveries, expect 1–2 business days. Other states may take up to 5 business days.",
     ],
   },
   {

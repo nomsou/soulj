@@ -35,6 +35,7 @@ export function ProductDetail({ product }: { product: Product }) {
   const prevImage = () => {
     setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
+
   const handleAddToCart = (showToast = true) => {
     addItem({
       id: product.id,
@@ -160,7 +161,8 @@ export function ProductDetail({ product }: { product: Product }) {
             {[
               ["Colour", product.color],
               ["Size", product.size],
-              ["Delivery", "Flat ₦2,500 — Nigeria only"],
+              /* Updated visual baseline layout to explicitly flag adaptive state shipping profiles */
+              ["Delivery", "Abuja ₦2,500 — Others vary by courier"],
               ["Stock", outOfStock ? "Sold out" : `${product.stock} left`],
             ].map(([label, val]) => (
               <div key={label} className="flex justify-between text-sm">

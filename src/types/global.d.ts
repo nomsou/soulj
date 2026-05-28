@@ -1,3 +1,5 @@
+declare module "naija-state-local-government";
+
 declare module "@paystack/inline-js" {
   export default class PaystackPop {
     resumeTransaction(
