@@ -10,19 +10,32 @@ const statusColors: Record<string, string> = {
 };
 
 export default async function AdminOverview() {
-  const [orders, productCount, subscriberCount] = await Promise.all([
-    prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 10 }),
-    prisma.product.count(),
-    prisma.subscriber.count(),
-  ]);
+  const [orders, productCount, explicitSubscribers, orderEmails] =
+    await Promise.all([
+      prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 10 }),
+      prisma.product.count(),
+      prisma.subscriber.findMany({ select: { email: true } }),
+      prisma.order.findMany({ select: { email: true } }),
+    ]);
 
-  const revenue = orders.reduce((sum, o) => sum + o.totalNGN, 0);
+  const totalAudienceSet = new Set<string>();
+  explicitSubscribers.forEach((s) =>
+    totalAudienceSet.add(s.email.toLowerCase().trim()),
+  );
+  orderEmails.forEach((o) =>
+    totalAudienceSet.add(o.email.toLowerCase().trim()),
+  );
+
+  const totalRevenueOrders = await prisma.order.findMany({
+    select: { totalNGN: true },
+  });
+  const revenue = totalRevenueOrders.reduce((sum, o) => sum + o.totalNGN, 0);
 
   const stats = [
     { label: "Revenue", value: formatNGN(revenue) },
-    { label: "Orders", value: orders.length },
+    { label: "Orders", value: totalRevenueOrders.length },
     { label: "Products", value: productCount },
-    { label: "Subscribers", value: subscriberCount },
+    { label: "Subscribers", value: totalAudienceSet.size },
   ];
 
   return (
