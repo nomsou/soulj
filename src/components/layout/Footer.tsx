@@ -64,11 +64,11 @@ export function Footer() {
               hello@soulj.com
             </a>
             <a
-              href="tel:+2348000000000"
+              href="tel:+ +2348078397832"
               className="text-xs tracking-[0.1em] transition-opacity hover:opacity-60"
               style={{ color: "var(--muted)" }}
             >
-              +234 800 000 0000
+              +234 807 839 7832
             </a>
           </div>
         </div>

@@ -133,10 +133,10 @@ export default function PoliciesPage() {
             </a>{" "}
             or{" "}
             <a
-              href="tel:+2348000000000"
+              href="tel:+ +2348078397832"
               className="underline underline-offset-2"
             >
-              +234 800 000 0000
+              +234 807 839 7832
             </a>
           </p>
         </div>
