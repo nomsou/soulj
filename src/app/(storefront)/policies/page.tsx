@@ -22,7 +22,7 @@ const sections = [
   {
     title: "Returns & Exchanges",
     content: [
-      "We accept returns and exchanges within 7 days of delivery.",
+      "We accept returns within 2 days of delivery.",
       "Items must be unworn, unwashed, and in their original condition with all tags intact.",
       "To initiate a return or exchange, contact us at hello@soulj.com with your order reference and reason.",
       "Customers are responsible for the cost of return shipping unless the item received was defective or incorrect.",
