@@ -53,8 +53,19 @@ function NavLinks({
             onClick={onNavigate}
             className="flex items-center gap-3 px-3 py-2.5 text-sm transition-all rounded-sm"
             style={{
-              color: active ? "#E8E2C8" : "rgba(255,255,255,0.4)",
-              background: active ? "rgba(255,255,255,0.07)" : "transparent",
+              color:
+                href === "/"
+                  ? "rgba(232,226,200,0.7)"
+                  : active
+                    ? "#E8E2C8"
+                    : "rgba(255,255,255,0.4)",
+
+              background:
+                href === "/"
+                  ? "transparent"
+                  : active
+                    ? "rgba(255,255,255,0.07)"
+                    : "transparent",
             }}
           >
             <Icon size={15} strokeWidth={1.5} />
