@@ -4,7 +4,6 @@ export default function GlobalBrandLoader() {
       className="fixed inset-0 z-50 flex flex-col items-center justify-center select-none overflow-hidden transition-colors duration-500"
       style={{ background: "var(--page)" }}
     >
-      {/* 1. Ambient Background Light Blur Halo */}
       <div
         className="absolute w-72 h-72 rounded-full blur-[100px] animate-pulse-glow pointer-events-none"
         style={{
@@ -13,7 +12,6 @@ export default function GlobalBrandLoader() {
       />
 
       <div className="relative flex items-center justify-center w-64 h-64">
-        {/* 2. Avant-Garde Minimalist Geometric Spinning Ring */}
         <div
           className="absolute inset-0 rounded-full border border-dashed opacity-20 animate-portal-spin"
           style={{
@@ -22,7 +20,6 @@ export default function GlobalBrandLoader() {
           }}
         />
 
-        {/* 3. Outer Floating Accent Corner Micro-dots */}
         <div
           className="absolute w-full h-full animate-portal-spin"
           style={{ animationDirection: "reverse", animationDuration: "6s" }}
@@ -37,7 +34,6 @@ export default function GlobalBrandLoader() {
           />
         </div>
 
-        {/* 4. Cinematic Letter-Spacing Fluid Branding Text */}
         <h1
           className="text-2xl font-bold uppercase tracking-[0.3em] animate-cinematic-text text-center ml-[0.3em]"
           style={{ color: "var(--body)" }}
@@ -46,7 +42,6 @@ export default function GlobalBrandLoader() {
         </h1>
       </div>
 
-      {/* 5. Minimal Drop Identifier Tag at the base */}
       <div className="absolute bottom-10 flex flex-col items-center gap-1 opacity-40">
         <p
           className="text-[9px] tracking-[0.25em] uppercase font-medium"
