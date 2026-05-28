@@ -19,28 +19,44 @@ type ProductData = {
   published: boolean;
 };
 
-export function ProductForm({ initial }: { initial?: ProductData }) {
+export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
   const router = useRouter();
   const isEdit = !!initial?.id;
 
   const [form, setForm] = useState<ProductData>(
-    initial ?? {
-      name: "",
-      slug: "",
-      description: "",
-      priceNGN: 0,
-      priceUSD: 0,
-      color: "Black",
-      size: "M",
-      stock: 0,
-      images: [],
-      published: false,
-    },
+    initial
+      ? {
+          name: initial.name ?? "",
+          slug: initial.slug ?? "",
+          description: initial.description ?? "",
+          priceNGN: initial.priceNGN ?? 0,
+          priceUSD: initial.priceUSD ?? 0,
+          color: initial.color ?? "Black",
+          size: initial.size ?? "M",
+          stock: initial.stock ?? 0,
+          images: initial.images ?? [],
+          published: initial.published ?? false,
+          id: initial.id,
+        }
+      : {
+          name: "",
+          slug: "",
+          description: "",
+          priceNGN: 0,
+          priceUSD: 0,
+          color: "Black",
+          size: "M",
+          stock: 0,
+          images: [],
+          published: false,
+        },
   );
+
   const [loading, setLoading] = useState(false);
 
-  const set = (key: keyof ProductData, val: any) =>
+  const set = <K extends keyof ProductData>(key: K, val: ProductData[K]) => {
     setForm((p) => ({ ...p, [key]: val }));
+  };
 
   const autoSlug = (name: string) =>
     name
@@ -48,22 +64,43 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
 
+  // MOVE SELECTED IMAGE TO FIRST POSITION (COVER)
+  const makeCover = (url: string) => {
+    setForm((prev) => ({
+      ...prev,
+      images: [url, ...prev.images.filter((img) => img !== url)],
+    }));
+  };
+
+  const removeImage = (url: string) => {
+    setForm((prev) => ({
+      ...prev,
+      images: prev.images.filter((img) => img !== url),
+    }));
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
+
     const url = isEdit ? `/api/products/${initial!.id}` : "/api/products";
     const method = isEdit ? "PUT" : "POST";
+
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     });
+
+    setLoading(false);
     router.push("/admin/products");
     router.refresh();
   };
 
   const inputCls =
     "w-full px-3 py-2.5 text-sm outline-none border text-[#0D0D0A] bg-[#FAFAF5]";
+
   const inputStyle = { borderColor: "#D5D2BF" };
+
   const labelCls =
     "block text-[10px] tracking-[0.1em] uppercase mb-1.5 text-[#3D4A28]";
 
@@ -74,6 +111,7 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
       </h1>
 
       <div className="space-y-5">
+        {/* NAME */}
         <div>
           <label className={labelCls}>Name</label>
           <input
@@ -87,8 +125,9 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
           />
         </div>
 
+        {/* SLUG */}
         <div>
-          <label className={labelCls}>Slug (auto-generated)</label>
+          <label className={labelCls}>Slug</label>
           <input
             className={inputCls}
             style={inputStyle}
@@ -97,6 +136,7 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
           />
         </div>
 
+        {/* DESCRIPTION */}
         <div>
           <label className={labelCls}>Description</label>
           <textarea
@@ -108,6 +148,7 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
           />
         </div>
 
+        {/* PRICES */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelCls}>Price (NGN)</label>
@@ -116,9 +157,10 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
               className={inputCls}
               style={inputStyle}
               value={form.priceNGN}
-              onChange={(e) => set("priceNGN", parseFloat(e.target.value))}
+              onChange={(e) => set("priceNGN", Number(e.target.value))}
             />
           </div>
+
           <div>
             <label className={labelCls}>Price (USD)</label>
             <input
@@ -126,11 +168,12 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
               className={inputCls}
               style={inputStyle}
               value={form.priceUSD}
-              onChange={(e) => set("priceUSD", parseFloat(e.target.value))}
+              onChange={(e) => set("priceUSD", Number(e.target.value))}
             />
           </div>
         </div>
 
+        {/* COLOR + SIZE */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelCls}>Colour</label>
@@ -144,6 +187,7 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
               <option>White</option>
             </select>
           </div>
+
           <div>
             <label className={labelCls}>Size</label>
             <select
@@ -161,6 +205,7 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
           </div>
         </div>
 
+        {/* STOCK */}
         <div>
           <label className={labelCls}>Stock</label>
           <input
@@ -168,38 +213,56 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
             className={inputCls}
             style={inputStyle}
             value={form.stock}
-            onChange={(e) => set("stock", parseInt(e.target.value))}
+            onChange={(e) => set("stock", Number(e.target.value))}
           />
         </div>
 
-        {/* Image upload */}
+        {/* IMAGES */}
         <div>
-          <label className={labelCls}>Product images (first = cover)</label>
+          <label className={labelCls}>Product images (first is cover)</label>
 
           {form.images.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-3">
-              {form.images.map((url, i) => (
-                <div key={i} className="relative w-20 h-24">
-                  <img
-                    src={url}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      set(
-                        "images",
-                        form.images.filter((_, j) => j !== i),
-                      )
-                    }
-                    className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-black/60"
-                    aria-label="Remove image"
-                  >
-                    <X size={10} color="white" />
-                  </button>
-                </div>
-              ))}
+              {form.images.map((url, i) => {
+                const isCover = i === 0;
+
+                return (
+                  <div key={url} className="relative w-20 h-24">
+                    <img
+                      src={url}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+
+                    {/* DELETE */}
+                    <button
+                      type="button"
+                      onClick={() => removeImage(url)}
+                      className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-black/60"
+                    >
+                      <X size={10} color="white" />
+                    </button>
+
+                    {/* MAKE COVER */}
+                    {i !== 0 && (
+                      <button
+                        type="button"
+                        onClick={() => makeCover(url)}
+                        className="absolute bottom-1 left-1 text-[9px] px-1 py-0.5 bg-black/70 text-white"
+                      >
+                        Make cover
+                      </button>
+                    )}
+
+                    {/* COVER BADGE */}
+                    {isCover && (
+                      <div className="absolute top-1 left-1 text-[9px] px-1 py-0.5 bg-green-600 text-white">
+                        Cover
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
 
@@ -209,15 +272,25 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
             }
             onSuccess={(result: any) => {
               const url = result?.info?.secure_url;
-              if (url) set("images", [...form.images, url]);
+              if (!url) return;
+
+              setForm((prev) => ({
+                ...prev,
+                images:
+                  prev.images.length === 0 ? [url] : [...prev.images, url],
+              }));
             }}
-            options={{ multiple: true, maxFiles: 5, resourceType: "image" }}
+            options={{
+              multiple: true,
+              maxFiles: 5,
+              resourceType: "image",
+            }}
           >
             {({ open }) => (
               <button
                 type="button"
                 onClick={() => open()}
-                className="px-4 py-2.5 text-xs tracking-[0.12em] uppercase border transition-all"
+                className="px-4 py-2.5 text-xs tracking-[0.12em] uppercase border"
                 style={{ borderColor: "#D5D2BF", color: "#3D4A28" }}
               >
                 Upload images
@@ -226,39 +299,37 @@ export function ProductForm({ initial }: { initial?: ProductData }) {
           </CldUploadWidget>
 
           <p className="text-[11px] mt-1.5" style={{ color: "#3D4A28" }}>
-            Up to 5 images. Stored on Cloudinary.
+            First image is automatically used as cover.
           </p>
         </div>
 
+        {/* PUBLISHED */}
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
-            id="published"
             checked={form.published}
             onChange={(e) => set("published", e.target.checked)}
             className="w-4 h-4"
           />
-          <label
-            htmlFor="published"
-            className="text-sm"
-            style={{ color: "#0D0D0A" }}
-          >
-            Published (visible on storefront)
+          <label className="text-sm" style={{ color: "#0D0D0A" }}>
+            Published
           </label>
         </div>
 
+        {/* ACTIONS */}
         <div className="flex gap-4 pt-4">
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="flex-1 py-3 text-sm tracking-[0.15em] uppercase font-medium transition-all disabled:opacity-50"
+            className="flex-1 py-3 text-sm tracking-[0.15em] uppercase font-medium"
             style={{ background: "#0D0D0A", color: "#E8E2C8" }}
           >
-            {loading ? "Saving..." : isEdit ? "Save changes" : "Create product"}
+            {loading ? "Saving..." : isEdit ? "Save changes" : "Create"}
           </button>
+
           <button
             onClick={() => router.back()}
-            className="px-6 py-3 text-sm tracking-[0.15em] uppercase border transition-all"
+            className="px-6 py-3 text-sm tracking-[0.15em] uppercase border"
             style={{ borderColor: "#D5D2BF", color: "#3D4A28" }}
           >
             Cancel
