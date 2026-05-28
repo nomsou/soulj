@@ -1,22 +1,40 @@
 import { prisma } from "@/lib/prisma";
 import { EmailComposer } from "@/components/admin/EmailComposer";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminEmails() {
-  const subscribers = await prisma.subscriber.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+  const [explicitSubscribers, pastOrders] = await Promise.all([
+    prisma.subscriber.findMany({ orderBy: { createdAt: "desc" } }),
+    prisma.order.findMany({ select: { email: true } }),
+  ]);
+
+  const allUniqueEmails = new Set<string>();
+
+  explicitSubscribers.forEach((s) =>
+    allUniqueEmails.add(s.email.toLowerCase().trim()),
+  );
+
+  pastOrders.forEach((o) => allUniqueEmails.add(o.email.toLowerCase().trim()));
+
+  const consolidatedEmailList = Array.from(allUniqueEmails);
 
   return (
     <div className="p-4 md:p-8">
       <h1 className="text-xl font-medium mb-2" style={{ color: "#0D0D0A" }}>
         Emails
       </h1>
+
       <p className="text-sm mb-8" style={{ color: "#3D4A28" }}>
-        {subscribers.length} subscriber{subscribers.length !== 1 ? "s" : ""}
+        <span className="font-semibold text-[#0D0D0A]">
+          {consolidatedEmailList.length}
+        </span>{" "}
+        total subscriber
+        {consolidatedEmailList.length !== 1 ? "s" : ""} available for campaigns
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-        <EmailComposer subscribers={subscribers.map((s) => s.email)} />
+        <EmailComposer subscribers={consolidatedEmailList} />
 
         <div>
           <p
@@ -25,20 +43,26 @@ export default async function AdminEmails() {
           >
             Subscribers
           </p>
-          <div style={{ border: "0.5px solid #D5D2BF" }}>
-            {subscribers.length === 0 ? (
+          <div
+            style={{
+              border: "0.5px solid #D5D2BF",
+              maxHeight: "500px",
+              overflowY: "auto",
+            }}
+          >
+            {consolidatedEmailList.length === 0 ? (
               <div className="py-10 text-center">
                 <p
                   className="text-xs tracking-[0.15em] uppercase"
                   style={{ color: "#3D4A28" }}
                 >
-                  No subscribers yet
+                  No subscribers found
                 </p>
               </div>
             ) : (
-              subscribers.map((s) => (
+              consolidatedEmailList.map((email, i) => (
                 <div
-                  key={s.id}
+                  key={i}
                   className="flex items-center justify-between px-4 py-3"
                   style={{ borderBottom: "0.5px solid #EAE7D8" }}
                 >
@@ -46,11 +70,25 @@ export default async function AdminEmails() {
                     className="text-sm truncate mr-4"
                     style={{ color: "#0D0D0A" }}
                   >
-                    {s.email}
+                    {email}
                   </p>
-                  <p className="text-xs shrink-0" style={{ color: "#3D4A28" }}>
-                    {new Date(s.createdAt).toLocaleDateString("en-NG")}
-                  </p>
+                  <span
+                    className="text-[9px] tracking-wider uppercase px-1.5 py-0.5"
+                    style={{
+                      background: explicitSubscribers.some(
+                        (s) => s.email.toLowerCase() === email,
+                      )
+                        ? "#EAE7D8"
+                        : "#F2EFE4",
+                      color: "#3D4A28",
+                    }}
+                  >
+                    {explicitSubscribers.some(
+                      (s) => s.email.toLowerCase() === email,
+                    )
+                      ? "Subscriber"
+                      : "Customer"}
+                  </span>
                 </div>
               ))
             )}

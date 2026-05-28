@@ -74,7 +74,11 @@ export function EmailComposer({ subscribers }: { subscribers: string[] }) {
 
         <div className="flex items-center justify-between">
           <p className="text-xs" style={{ color: "#3D4A28" }}>
-            Sending to {subscribers.length} subscriber
+            Sending to{" "}
+            <span className="font-semibold text-[#0D0D0A]">
+              {subscribers.length}
+            </span>{" "}
+            subscriber
             {subscribers.length !== 1 ? "s" : ""}
           </p>
           <button
