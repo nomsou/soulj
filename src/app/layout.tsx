@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.com",
+    process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.xyz",
   ),
   title: {
     default: "Soulj — Abuja Streetwear",
@@ -56,13 +54,11 @@ export default async function RootLayout({
         className={cn(
           GeistSans.variable,
           GeistMono.variable,
-          "font-sans antialiased min-h-screen flex flex-col",
+          "font-sans antialiased",
         )}
         style={{ background: "var(--page)", color: "var(--body)" }}
       >
-        <Navbar />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        {children}
         <Toaster />
       </body>
     </html>

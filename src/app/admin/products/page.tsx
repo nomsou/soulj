@@ -11,17 +11,17 @@ export default async function AdminProducts() {
   });
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 md:p-8">
+      <div className="flex items-center justify-between mb-6 md:mb-8">
         <h1 className="text-xl font-medium" style={{ color: "#0D0D0A" }}>
           Products
         </h1>
         <Link
           href="/admin/products/new"
-          className="text-xs tracking-[0.15em] uppercase px-5 py-2.5 transition-all hover:opacity-80"
+          className="text-xs tracking-[0.15em] uppercase px-4 py-2.5 transition-all hover:opacity-80"
           style={{ background: "#0D0D0A", color: "#E8E2C8" }}
         >
-          + Add product
+          + Add
         </Link>
       </div>
 
@@ -39,11 +39,11 @@ export default async function AdminProducts() {
           products.map((p) => (
             <div
               key={p.id}
-              className="flex items-center gap-5 px-5 py-4"
+              className="flex items-center gap-3 md:gap-5 px-4 md:px-5 py-4"
               style={{ borderBottom: "0.5px solid #EAE7D8" }}
             >
               <div
-                className="w-12 h-16 shrink-0 flex items-center justify-center"
+                className="w-10 h-14 md:w-12 md:h-16 shrink-0 flex items-center justify-center"
                 style={{
                   background:
                     p.color.toLowerCase() === "black" ? "#0D0D0A" : "#E2DFCF",
@@ -65,27 +65,30 @@ export default async function AdminProducts() {
                 )}
               </div>
 
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <p
-                  className="text-sm font-medium mb-0.5"
+                  className="text-sm font-medium mb-0.5 truncate"
                   style={{ color: "#0D0D0A" }}
                 >
                   {p.name}
                 </p>
                 <p
-                  className="text-xs tracking-[0.1em] uppercase"
+                  className="text-xs tracking-[0.08em] uppercase"
                   style={{ color: "#3D4A28" }}
                 >
-                  {p.color} — {p.size} — Stock: {p.stock}
+                  {p.color} · {p.size} · {p.stock} left
                 </p>
               </div>
 
-              <div className="flex items-center gap-6">
-                <p className="text-sm" style={{ color: "#0D0D0A" }}>
+              <div className="flex items-center gap-3 md:gap-5 shrink-0">
+                <p
+                  className="text-sm hidden sm:block"
+                  style={{ color: "#0D0D0A" }}
+                >
                   {formatNGN(p.priceNGN)}
                 </p>
                 <span
-                  className="text-[10px] tracking-[0.1em] uppercase px-2.5 py-1"
+                  className="text-[10px] tracking-[0.08em] uppercase px-2 py-1"
                   style={{
                     color: p.published ? "#1D9E75" : "#BA7517",
                     background: p.published ? "#1D9E7518" : "#BA751718",

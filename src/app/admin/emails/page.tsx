@@ -7,11 +7,11 @@ export default async function AdminEmails() {
   });
 
   return (
-    <div className="p-8">
-      <h1 className="text-xl font-medium mb-2" style={{ color: "var(--body)" }}>
+    <div className="p-4 md:p-8">
+      <h1 className="text-xl font-medium mb-2" style={{ color: "#0D0D0A" }}>
         Emails
       </h1>
-      <p className="text-sm mb-8" style={{ color: "var(--muted)" }}>
+      <p className="text-sm mb-8" style={{ color: "#3D4A28" }}>
         {subscribers.length} subscriber{subscribers.length !== 1 ? "s" : ""}
       </p>
 
@@ -21,19 +21,16 @@ export default async function AdminEmails() {
         <div>
           <p
             className="text-xs tracking-[0.2em] uppercase font-medium mb-4"
-            style={{ color: "var(--body)" }}
+            style={{ color: "#0D0D0A" }}
           >
             Subscribers
           </p>
-          <div
-            className="border divide-y"
-            style={{ borderColor: "var(--card)" }}
-          >
+          <div style={{ border: "0.5px solid #D5D2BF" }}>
             {subscribers.length === 0 ? (
               <div className="py-10 text-center">
                 <p
                   className="text-xs tracking-[0.15em] uppercase"
-                  style={{ color: "var(--muted)" }}
+                  style={{ color: "#3D4A28" }}
                 >
                   No subscribers yet
                 </p>
@@ -43,12 +40,15 @@ export default async function AdminEmails() {
                 <div
                   key={s.id}
                   className="flex items-center justify-between px-4 py-3"
-                  style={{ borderColor: "var(--card)" }}
+                  style={{ borderBottom: "0.5px solid #EAE7D8" }}
                 >
-                  <p className="text-sm" style={{ color: "var(--body)" }}>
+                  <p
+                    className="text-sm truncate mr-4"
+                    style={{ color: "#0D0D0A" }}
+                  >
                     {s.email}
                   </p>
-                  <p className="text-xs" style={{ color: "var(--muted)" }}>
+                  <p className="text-xs shrink-0" style={{ color: "#3D4A28" }}>
                     {new Date(s.createdAt).toLocaleDateString("en-NG")}
                   </p>
                 </div>

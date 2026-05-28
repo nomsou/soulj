@@ -10,8 +10,11 @@ export default async function AdminOrders() {
   });
 
   return (
-    <div className="p-8">
-      <h1 className="text-xl font-medium mb-8" style={{ color: "#0D0D0A" }}>
+    <div className="p-4 md:p-8">
+      <h1
+        className="text-xl font-medium mb-6 md:mb-8"
+        style={{ color: "#0D0D0A" }}
+      >
         Orders
       </h1>
 
@@ -31,22 +34,25 @@ export default async function AdminOrders() {
             return (
               <div
                 key={order.id}
-                className="px-5 py-5 space-y-3"
+                className="px-4 md:px-5 py-4 md:py-5 space-y-3"
                 style={{ borderBottom: "0.5px solid #EAE7D8" }}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div>
+                  <div className="min-w-0">
                     <p
                       className="text-sm font-medium mb-0.5"
                       style={{ color: "#0D0D0A" }}
                     >
                       {order.firstName} {order.lastName}
                     </p>
-                    <p className="text-xs mb-0.5" style={{ color: "#3D4A28" }}>
-                      {order.email} · {order.phone}
+                    <p
+                      className="text-xs mb-0.5 truncate"
+                      style={{ color: "#3D4A28" }}
+                    >
+                      {order.email}
                     </p>
                     <p className="text-xs" style={{ color: "#3D4A28" }}>
-                      {order.address}, {order.city}, {order.state}
+                      {order.phone}
                     </p>
                   </div>
                   <div className="text-right shrink-0">
@@ -65,6 +71,10 @@ export default async function AdminOrders() {
                   </div>
                 </div>
 
+                <p className="text-xs" style={{ color: "#3D4A28" }}>
+                  {order.address}, {order.city}, {order.state}
+                </p>
+
                 <div className="space-y-0.5">
                   {items.map((item: any, i: number) => (
                     <p key={i} className="text-xs" style={{ color: "#3D4A28" }}>
@@ -73,7 +83,7 @@ export default async function AdminOrders() {
                   ))}
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between flex-wrap gap-2">
                   <p
                     className="text-[10px] tracking-[0.1em] uppercase"
                     style={{ color: "#3D4A28" }}
