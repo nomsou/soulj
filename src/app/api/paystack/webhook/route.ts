@@ -21,20 +21,21 @@ export async function POST(req: NextRequest) {
   if (event.event === "charge.success") {
     const reference = event.data.reference;
 
-    // 1. Mark order as paid
     const order = await prisma.order.update({
       where: { reference },
       data: { status: "PAID" },
     });
 
-    // 2. AUTO-SUBSCRIBE: Upsert the customer's email into the Subscriber table
     await prisma.subscriber.upsert({
       where: { email: order.email },
-      update: {}, // If they already exist, do absolutely nothing
-      create: { email: order.email }, // If they are new, create the row
+      update: {},
+      create: { email: order.email },
     });
 
     const items = order.items as any[];
+
+    const baseTargetTotal = order.subtotalNGN + order.deliveryFee;
+    const processingFeeNGN = Math.max(0, order.totalNGN - baseTargetTotal);
 
     const itemsTableRows = items
       .map(
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
       html: `
         <div style="font-family:sans-serif;max-width:500px;margin:0 auto;color:#0D0D0A;">
           <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#3D4A28;margin-bottom:24px;">
-            Soulj — Abuja
+            Soulj — Drop 001
           </p>
           <h2 style="font-size:22px;font-weight:500;margin-bottom:8px;">
             Thank you, ${order.firstName}.
@@ -68,12 +69,20 @@ export async function POST(req: NextRequest) {
           <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
             ${itemsTableRows}
             <tr>
-              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Delivery</td>
-              <td style="font-size:13px;padding:8px 0;text-align:right;color:#3D4A28;">₦2,500</td>
+              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Subtotal</td>
+              <td style="font-size:13px;padding:8px 0;text-align:right;color:#0D0D0A;">₦${order.subtotalNGN.toLocaleString()}</td>
             </tr>
             <tr>
-              <td style="font-size:14px;font-weight:500;padding:10px 0;">Total</td>
-              <td style="font-size:14px;font-weight:500;padding:10px 0;text-align:right;">
+              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Delivery (${order.state})</td>
+              <td style="font-size:13px;padding:8px 0;text-align:right;color:#0D0D0A;">₦${order.deliveryFee.toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Processing Fee</td>
+              <td style="font-size:13px;padding:8px 0;text-align:right;color:#0D0D0A;">₦${processingFeeNGN.toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td style="font-size:14px;font-weight:500;padding:10px 0;border-top:1px solid #0D0D0A;">Total</td>
+              <td style="font-size:14px;font-weight:500;padding:10px 0;text-align:right;border-top:1px solid #0D0D0A;color:#0D0D0A;">
                 ₦${order.totalNGN.toLocaleString()}
               </td>
             </tr>
@@ -82,8 +91,9 @@ export async function POST(req: NextRequest) {
             <p style="font-size:11px;color:#3D4A28;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;">
               Delivery address
             </p>
-            <p style="font-size:13px;color:#0D0D0A;margin:0;">
-              ${order.address}, ${order.city}, ${order.state}
+            <p style="font-size:13px;color:#0D0D0A;margin:0;line-height:1.5;">
+              ${order.address},<br />
+              ${order.city}, ${order.state}
             </p>
           </div>
           <p style="font-size:11px;color:#3D4A28;">Ref: ${order.reference}</p>
@@ -110,12 +120,20 @@ export async function POST(req: NextRequest) {
           <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
             ${itemsTableRows}
             <tr>
-              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Delivery</td>
-              <td style="font-size:13px;padding:8px 0;text-align:right;color:#3D4A28;">₦2,500</td>
+              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Subtotal</td>
+              <td style="font-size:13px;padding:8px 0;text-align:right;color:#0D0D0A;">₦${order.subtotalNGN.toLocaleString()}</td>
             </tr>
             <tr>
-              <td style="font-size:14px;font-weight:500;padding:10px 0;">Total</td>
-              <td style="font-size:14px;font-weight:500;padding:10px 0;text-align:right;">
+              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Delivery</td>
+              <td style="font-size:13px;padding:8px 0;text-align:right;color:#0D0D0A;">₦${order.deliveryFee.toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td style="font-size:13px;padding:8px 0;color:#3D4A28;">Processing Fee</td>
+              <td style="font-size:13px;padding:8px 0;text-align:right;color:#0D0D0A;">₦${processingFeeNGN.toLocaleString()}</td>
+            </tr>
+            <tr>
+              <td style="font-size:14px;font-weight:500;padding:10px 0;border-top:1px solid #0D0D0A;">Total</td>
+              <td style="font-size:14px;font-weight:500;padding:10px 0;text-align:right;border-top:1px solid #0D0D0A;">
                 ₦${order.totalNGN.toLocaleString()}
               </td>
             </tr>
@@ -140,43 +158,5 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  // ---- Dispatch notification ----
-  // if (event.event === "order.dispatched") {
-  //   const reference = event.data.reference;
-  //   const order = await prisma.order.findUnique({ where: { reference } });
-  //   if (order) {
-  //     await sendEmail({
-  //       to: order.email,
-  //       subject: "Your Soulj order is on its way.",
-  //       html: `
-  //         <div style="font-family:sans-serif;max-width:500px;margin:0 auto;color:#0D0D0A;">
-  //           <p style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#3D4A28;margin-bottom:24px;">
-  //             Soulj — Abuja
-  //           </p>
-  //           <h2 style="font-size:22px;font-weight:500;margin-bottom:8px;">
-  //             Your order is on its way, ${order.firstName}.
-  //           </h2>
-  //           <p style="font-size:14px;color:#3D4A28;margin-bottom:24px;">
-  //             Your Soulj order has been dispatched and is headed to you.
-  //           </p>
-  //           <div style="background:#F5F5F0;padding:16px;margin-bottom:24px;">
-  //             <p style="font-size:11px;color:#3D4A28;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.1em;">
-  //               Delivering to
-  //             </p>
-  //             <p style="font-size:13px;color:#0D0D0A;margin:0;">
-  //               ${order.address}, ${order.city}, ${order.state}
-  //             </p>
-  //           </div>
-  //           <p style="font-size:13px;color:#3D4A28;margin-bottom:24px;">
-  //             If you have any questions, reply to this email or reach us at hello@soulj.com
-  //           </p>
-  //           <p style="font-size:11px;color:#3D4A28;">Ref: ${order.reference}</p>
-  //           <hr style="margin:32px 0;border:none;border-top:1px solid #E2DFCF;" />
-  //           <p style="font-size:11px;color:#3D4A28;">Soulj. Abuja, Nigeria.</p>
-  //         </div>
-  //       `,
-  //     });
-  //   }
-  // }
   return NextResponse.json({ received: true });
 }

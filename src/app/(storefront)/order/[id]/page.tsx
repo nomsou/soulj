@@ -22,6 +22,9 @@ export default async function OrderConfirmation({
 
   const items = order.items as any[];
 
+  const baseTargetTotal = order.subtotalNGN + order.deliveryFee;
+  const calculatedProcessingFee = Math.max(0, order.totalNGN - baseTargetTotal);
+
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-6 py-20"
@@ -76,12 +79,38 @@ export default async function OrderConfirmation({
             style={{ borderColor: "var(--border)" }}
           >
             <div className="flex justify-between text-sm">
+              <span style={{ color: "var(--muted)" }}>Subtotal</span>
+              <span style={{ color: "var(--body)" }}>
+                {formatNGN(order.subtotalNGN)}
+              </span>
+            </div>
+
+            <div className="flex justify-between text-sm">
               <span style={{ color: "var(--muted)" }}>Delivery</span>
               <span style={{ color: "var(--body)" }}>
                 {formatNGN(order.deliveryFee)}
               </span>
             </div>
-            <div className="flex justify-between text-sm font-medium">
+
+            <div className="space-y-0.5">
+              <div className="flex justify-between text-sm">
+                <span style={{ color: "var(--muted)" }}>Processing Fee</span>
+                <span style={{ color: "var(--body)" }}>
+                  {formatNGN(calculatedProcessingFee)}
+                </span>
+              </div>
+              <p
+                className="text-[10px] italic opacity-60 text-right"
+                style={{ color: "var(--muted)", margin: 0 }}
+              >
+                *Payment processing fee charged by Paystack
+              </p>
+            </div>
+
+            <div
+              className="flex justify-between text-sm font-medium pt-2 border-t"
+              style={{ borderColor: "var(--border)" }}
+            >
               <span style={{ color: "var(--body)" }}>Total</span>
               <span style={{ color: "var(--body)" }}>
                 {formatNGN(order.totalNGN)}

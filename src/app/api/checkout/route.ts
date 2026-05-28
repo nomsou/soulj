@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import crypto from "crypto"
+import crypto from "crypto";
 
 const getShippingFee = (stateName: string): number => {
   const normalizedState = stateName.toLowerCase().trim();
@@ -40,11 +40,23 @@ export async function POST(req: NextRequest) {
     }
 
     const deliveryFeeNGN = getShippingFee(customerInfo.state);
-    const finalGrandTotalNGN = calculatedSubtotalNGN + deliveryFeeNGN;
+    const baseTargetTotalNGN = calculatedSubtotalNGN + deliveryFeeNGN;
 
-    const amountInKobo = Math.round(finalGrandTotalNGN * 100);
+    let finalPaystackTotalNGN = baseTargetTotalNGN;
+    if (baseTargetTotalNGN > 0) {
+      const calculatedWithFee = (baseTargetTotalNGN + 100) / (1 - 0.015);
+      const prospectiveFee = calculatedWithFee - baseTargetTotalNGN;
 
-    const cryptoSlice = crypto.randomBytes(3).toString("hex").toUpperCase(); // e.g. B8F3A1
+      if (prospectiveFee > 2000) {
+        finalPaystackTotalNGN = baseTargetTotalNGN + 2000;
+      } else {
+        finalPaystackTotalNGN = calculatedWithFee;
+      }
+    }
+
+    const amountInKobo = Math.round(finalPaystackTotalNGN * 100);
+
+    const cryptoSlice = crypto.randomBytes(3).toString("hex").toUpperCase();
     const reference = `SOULJ-${cryptoSlice}`;
 
     const res = await fetch("https://api.paystack.co/transaction/initialize", {
@@ -89,9 +101,9 @@ export async function POST(req: NextRequest) {
         items,
         subtotalNGN: calculatedSubtotalNGN,
         deliveryFee: deliveryFeeNGN,
-        totalNGN: finalGrandTotalNGN,
+        totalNGN: finalPaystackTotalNGN,
         currency: "NGN",
-        status: "PAID",
+        status: "PENDING",
         paystackRef: reference,
       },
     });
