@@ -16,7 +16,7 @@ export async function sendEmail({
   const results = await Promise.allSettled(
     recipients.map((recipient) =>
       resend.emails.send({
-        from: `Soulj <${process.env.EMAIL_FROM || "orders@soulj.xyz"}>`,
+        from: "Soulj Orders <orders@soulj.xyz>",
         to: recipient,
         subject,
         html,
@@ -32,7 +32,7 @@ export async function sendEmail({
       console.error(`Resend error for ${recipients[i]}:`, result.value.error);
     } else {
       console.log(
-        `Email sent to ${recipients[i]}, id: ${result.value.data?.id}`,
+        `Email sent successfully to ${recipients[i]}, id: ${result.value.data?.id}`,
       );
     }
   });
