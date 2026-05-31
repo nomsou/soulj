@@ -8,7 +8,7 @@ async function main() {
         name: "Plain Tee",
         slug: "plain-tee-black",
         description: "100% cotton. Heavyweight. Made for Abuja.",
-        priceNGN: 18000,
+        priceNGN: 10000,
         color: "Black",
         size: "M",
         stock: 20,
@@ -19,7 +19,7 @@ async function main() {
         name: "Plain Tee",
         slug: "plain-tee-white",
         description: "100% cotton. Heavyweight. Made for Abuja.",
-        priceNGN: 18000,
+        priceNGN: 10000,
         color: "White",
         size: "M",
         stock: 20,
@@ -30,7 +30,7 @@ async function main() {
         name: "Longsleeve",
         slug: "longsleeve-white",
         description: "Brushed cotton longsleeve. Relaxed fit.",
-        priceNGN: 22000,
+        priceNGN: 13000,
         color: "White",
         size: "M",
         stock: 15,
@@ -42,8 +42,8 @@ async function main() {
 
   await prisma.setting.upsert({
     where: { key: "theme" },
-    update: { value: "olive" },
-    create: { key: "theme", value: "olive" },
+    update: { value: "military" },
+    create: { key: "theme", value: "military" },
   });
 
   console.log("Seeded products and settings.");

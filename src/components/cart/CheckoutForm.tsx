@@ -101,14 +101,7 @@ export function CheckoutForm({
     setAvailableCities(CITIES_BY_STATE[info.state] || []);
   }, [info.state]);
 
-  const baseTargetTotal = subtotal + currentDeliveryFee;
-  const rawPaystackTotal = (baseTargetTotal + 100) / (1 - 0.015);
-  const calculatedProcessingFee = Math.min(
-    rawPaystackTotal - baseTargetTotal,
-    2000,
-  );
-
-  const activeGrandTotal = baseTargetTotal + calculatedProcessingFee;
+  const activeGrandTotal = subtotal + currentDeliveryFee;
 
   const validate = () => {
     const e: Partial<CustomerInfo> = {};
@@ -334,23 +327,6 @@ export function CheckoutForm({
                 <span style={{ color: "var(--body)" }}>
                   {formatNGN(currentDeliveryFee)}
                 </span>
-              </div>
-
-              {/* Processing Fee Layout Row */}
-              <div className="space-y-0.5">
-                <div className="flex justify-between text-sm">
-                  <span style={{ color: "var(--muted)" }}>Processing Fee</span>
-                  <span style={{ color: "var(--body)" }}>
-                    {formatNGN(calculatedProcessingFee)}
-                  </span>
-                </div>
-                {/* Added Muted Explanatory Subscript */}
-                <p
-                  className="text-[10px] italic opacity-60 text-right"
-                  style={{ color: "var(--muted)", margin: 0 }}
-                >
-                  *Payment processing fee charged by Paystack
-                </p>
               </div>
 
               <div

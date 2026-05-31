@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.xyz",
   ),
   title: {
-    default: "Soulj — Abuja Streetwear",
+    default: "Soulj - Abuja Streetwear",
     template: "%s — Soulj",
   },
   description:
@@ -46,7 +46,7 @@ export default async function RootLayout({
   const setting = await prisma.setting
     .findUnique({ where: { key: "theme" } })
     .catch(() => null);
-  const theme = setting?.value ?? "olive";
+  const theme = setting?.value ?? "military";
 
   return (
     <html lang="en" data-theme={theme}>

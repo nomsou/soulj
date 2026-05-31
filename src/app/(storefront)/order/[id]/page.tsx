@@ -20,7 +20,7 @@ export default async function OrderConfirmation({
 
   if (!order) notFound();
 
-  const items = order.items as any[];
+  const items = (Array.isArray(order.items) ? order.items : []) as any[];
 
   const baseTargetTotal = order.subtotalNGN + order.deliveryFee;
   const calculatedProcessingFee = Math.max(0, order.totalNGN - baseTargetTotal);
@@ -65,10 +65,11 @@ export default async function OrderConfirmation({
             {items.map((item: any, i: number) => (
               <div key={i} className="flex justify-between text-sm">
                 <span style={{ color: "var(--muted)" }}>
-                  {item.name} — {item.color} × {item.quantity}
+                  {item.name || "Item"} — {item.color || "Default"} ×{" "}
+                  {item.quantity || 1}
                 </span>
                 <span style={{ color: "var(--body)" }}>
-                  {formatNGN(item.priceNGN * item.quantity)}
+                  {formatNGN((item.priceNGN || 0) * (item.quantity || 1))}
                 </span>
               </div>
             ))}
