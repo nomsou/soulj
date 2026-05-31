@@ -216,10 +216,10 @@ export function ProductDetail({ product }: { product: Product }) {
           <p className="text-xs" style={{ color: "var(--muted)" }}>
             Questions?{" "}
             <a
-              href="mailto:hello@soulj.com"
+              href="mailto:support@soulj.xyz"
               className="underline underline-offset-2"
             >
-              hello@soulj.com
+              support@soulj.xyz
             </a>
           </p>
         </div>

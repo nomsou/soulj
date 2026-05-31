@@ -24,7 +24,7 @@ const sections = [
     content: [
       "We accept returns within 2 days of delivery.",
       "Items must be unworn, unwashed, and in their original condition with all tags intact.",
-      "To initiate a return or exchange, contact us at hello@soulj.com with your order reference and reason.",
+      "To initiate a return or exchange, contact us at support@soulj.xyz with your order reference and reason.",
       "Customers are responsible for the cost of return shipping unless the item received was defective or incorrect.",
       "Once we receive and inspect the returned item, we will process your exchange or issue store credit within 3–5 business days.",
       "We do not offer cash refunds — all approved returns are issued as store credit valid for 6 months.",
@@ -46,14 +46,14 @@ const sections = [
       "Drop 001 is available in Size M only.",
       "Our tees and longsleeves are cut for a relaxed, slightly oversized fit.",
       "If you are between sizes or unsure, we recommend sizing up.",
-      "Contact us at hello@soulj.com if you need specific measurements before ordering.",
+      "Contact us at support@soulj.xyz if you need specific measurements before ordering.",
     ],
   },
   {
     title: "Order Cancellations",
     content: [
       "Orders can only be cancelled within 2 hours of placement, before processing begins.",
-      "To cancel an order, contact us immediately at hello@soulj.com with your order reference.",
+      "To cancel an order, contact us immediately at support@soulj.xyz with your order reference.",
       "Once an order has been processed or dispatched, it cannot be cancelled.",
     ],
   },
@@ -126,10 +126,10 @@ export default function PoliciesPage() {
           <p className="text-xs" style={{ color: "var(--muted)" }}>
             Questions? Reach us at{" "}
             <a
-              href="mailto:hello@soulj.com"
+              href="mailto:support@soulj.xyz"
               className="underline underline-offset-2"
             >
-              hello@soulj.com
+              support@soulj.xyz
             </a>{" "}
             or{" "}
             <a

@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Soulj — Abuja Streetwear",
     description: "Abuja-born streetwear. Drop 001 now live.",
-    url: process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.com",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.xyz",
     siteName: "Soulj",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
     locale: "en_NG",

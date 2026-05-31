@@ -47,7 +47,7 @@ export async function PATCH(
           </table>
           <p style="font-size:13px;color:#3D4A28;margin-bottom:24px;">
             If anything is wrong with your order, reach us at
-            <a href="mailto:hello@soulj.com" style="color:#0D0D0A;">hello@soulj.com</a>
+            <a href="mailto:support@soulj.xyz" style="color:#0D0D0A;">support@soulj.xyz</a>
           </p>
           <p style="font-size:11px;color:#3D4A28;">Ref: ${order.reference}</p>
           <hr style="margin:32px 0;border:none;border-top:1px solid #E2DFCF;" />

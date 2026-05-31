@@ -57,11 +57,11 @@ export function Footer() {
           </p>
           <div className="flex flex-col gap-2">
             <a
-              href="mailto:hello@soulj.com"
+              href="mailto:support@soulj.xyz"
               className="text-xs tracking-[0.1em] transition-opacity hover:opacity-60"
               style={{ color: "var(--muted)" }}
             >
-              hello@soulj.com
+              support@soulj.xyz
             </a>
             <a
               href="tel:+ +2348078397832"

@@ -12,10 +12,17 @@ const statusColors: Record<string, string> = {
 export default async function AdminOverview() {
   const [orders, productCount, explicitSubscribers, orderEmails] =
     await Promise.all([
-      prisma.order.findMany({ orderBy: { createdAt: "desc" }, take: 10 }),
+      prisma.order.findMany({
+        where: { status: { in: ["PAID", "DELIVERED"] } },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      }),
       prisma.product.count(),
       prisma.subscriber.findMany({ select: { email: true } }),
-      prisma.order.findMany({ select: { email: true } }),
+      prisma.order.findMany({
+        where: { status: { in: ["PAID", "DELIVERED"] } },
+        select: { email: true },
+      }),
     ]);
 
   const totalAudienceSet = new Set<string>();
@@ -26,14 +33,16 @@ export default async function AdminOverview() {
     totalAudienceSet.add(o.email.toLowerCase().trim()),
   );
 
-  const totalRevenueOrders = await prisma.order.findMany({
+  // Revenue from confirmed orders only
+  const revenueOrders = await prisma.order.findMany({
+    where: { status: { in: ["PAID", "DELIVERED"] } },
     select: { totalNGN: true },
   });
-  const revenue = totalRevenueOrders.reduce((sum, o) => sum + o.totalNGN, 0);
+  const revenue = revenueOrders.reduce((sum, o) => sum + o.totalNGN, 0);
 
   const stats = [
     { label: "Revenue", value: formatNGN(revenue) },
-    { label: "Orders", value: totalRevenueOrders.length },
+    { label: "Orders", value: revenueOrders.length },
     { label: "Products", value: productCount },
     { label: "Subscribers", value: totalAudienceSet.size },
   ];
@@ -112,6 +121,19 @@ export default async function AdminOverview() {
                 </p>
                 <p className="text-xs truncate" style={{ color: "#3D4A28" }}>
                   {order.reference}
+                </p>
+                <p
+                  className="text-[10px] truncate"
+                  style={{ color: "#3D4A28", opacity: 0.6 }}
+                >
+                  {new Date(order.createdAt).toLocaleString("en-NG", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })}
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0">

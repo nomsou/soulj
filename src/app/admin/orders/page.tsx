@@ -11,6 +11,9 @@ export default async function AdminOrders() {
 
   try {
     orders = await prisma.order.findMany({
+      where: {
+        status: { in: ["PAID", "DELIVERED"] },
+      },
       orderBy: { createdAt: "desc" },
     });
   } catch (error) {
@@ -87,7 +90,14 @@ export default async function AdminOrders() {
                       className="text-[10px] tracking-[0.1em] uppercase"
                       style={{ color: "#3D4A28" }}
                     >
-                      {new Date(order.createdAt).toLocaleDateString("en-NG")}
+                      {new Date(order.createdAt).toLocaleString("en-NG", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
                     </p>
                   </div>
                 </div>

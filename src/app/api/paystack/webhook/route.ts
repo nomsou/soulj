@@ -51,7 +51,6 @@ export async function POST(req: NextRequest) {
       )
       .join("");
 
-    // ---- Email to customer ----
     await sendEmail({
       to: order.email,
       subject: "Your Soulj order is confirmed.",
@@ -99,7 +98,7 @@ export async function POST(req: NextRequest) {
           <p style="font-size:11px;color:#3D4A28;">Ref: ${order.reference}</p>
           <hr style="margin:32px 0;border:none;border-top:1px solid #E2DFCF;" />
           <p style="font-size:11px;color:#3D4A28;">
-            Questions? Reply to this email or reach us at hello@soulj.com
+            Questions? Reply to this email or reach us at support@soulj.xyz
           </p>
         </div>
       `,
