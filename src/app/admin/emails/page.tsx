@@ -9,13 +9,18 @@ export default async function AdminEmails() {
     prisma.order.findMany({ select: { email: true } }),
   ]);
 
-  const allUniqueEmails = new Set<string>();
+  const customerEmailSet = new Set<string>();
+  pastOrders.forEach((o) => {
+    if (o.email) customerEmailSet.add(o.email.toLowerCase().trim());
+  });
 
+  const allUniqueEmails = new Set<string>();
   explicitSubscribers.forEach((s) =>
     allUniqueEmails.add(s.email.toLowerCase().trim()),
   );
-
-  pastOrders.forEach((o) => allUniqueEmails.add(o.email.toLowerCase().trim()));
+  pastOrders.forEach((o) => {
+    if (o.email) allUniqueEmails.add(o.email.toLowerCase().trim());
+  });
 
   const consolidatedEmailList = Array.from(allUniqueEmails);
 
@@ -60,37 +65,33 @@ export default async function AdminEmails() {
                 </p>
               </div>
             ) : (
-              consolidatedEmailList.map((email, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between px-4 py-3"
-                  style={{ borderBottom: "0.5px solid #EAE7D8" }}
-                >
-                  <p
-                    className="text-sm truncate mr-4"
-                    style={{ color: "#0D0D0A" }}
+              consolidatedEmailList.map((email, i) => {
+                const isCustomer = customerEmailSet.has(email);
+
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center justify-between px-4 py-3"
+                    style={{ borderBottom: "0.5px solid #EAE7D8" }}
                   >
-                    {email}
-                  </p>
-                  <span
-                    className="text-[9px] tracking-wider uppercase px-1.5 py-0.5"
-                    style={{
-                      background: explicitSubscribers.some(
-                        (s) => s.email.toLowerCase() === email,
-                      )
-                        ? "#EAE7D8"
-                        : "#F2EFE4",
-                      color: "#3D4A28",
-                    }}
-                  >
-                    {explicitSubscribers.some(
-                      (s) => s.email.toLowerCase() === email,
-                    )
-                      ? "Subscriber"
-                      : "Customer"}
-                  </span>
-                </div>
-              ))
+                    <p
+                      className="text-sm truncate mr-4"
+                      style={{ color: "#0D0D0A" }}
+                    >
+                      {email}
+                    </p>
+                    <span
+                      className="text-[9px] tracking-wider uppercase px-1.5 py-0.5"
+                      style={{
+                        background: isCustomer ? "#0D0D0A" : "#EAE7D8",
+                        color: isCustomer ? "#F5F5F0" : "#3D4A28",
+                      }}
+                    >
+                      {isCustomer ? "Customer" : "Subscriber"}
+                    </span>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>
