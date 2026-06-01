@@ -6,7 +6,7 @@ import { SubscribeBanner } from "@/components/home/SubscribeBanner";
 export const metadata: Metadata = {
   title: "Soulj — Abuja Streetwear",
   description:
-    "Soulj is an Abuja-born streetwear brand. Drop 001 — plain tees and longsleeves.",
+    "Soulj is an Abuja-born streetwear brand. Drop 001 — heavyweight tees.",
 };
 
 export default function HomePage() {

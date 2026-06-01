@@ -7,7 +7,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export const metadata: Metadata = {
   title: "Shop",
   description:
-    "Shop Soulj Drop 001 — plain tees and longsleeves. Abuja streetwear.",
+    "Shop Soulj Drop 001 — heavyweight branded tees. Abuja streetwear.",
 };
 
 export default async function ShopPage() {

@@ -44,7 +44,7 @@ const sections = [
     title: "Sizing",
     content: [
       "Drop 001 is available in Size M only.",
-      "Our tees and longsleeves are cut for a relaxed, slightly oversized fit.",
+      "Our heavyweight tees are cut for a relaxed, slightly oversized fit.",
       "If you are between sizes or unsure, we recommend sizing up.",
       "Contact us at support@soulj.xyz if you need specific measurements before ordering.",
     ],

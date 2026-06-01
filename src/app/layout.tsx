@@ -15,11 +15,17 @@ export const metadata: Metadata = {
     template: "%s — Soulj",
   },
   description:
-    "Soulj is an Abuja-born streetwear brand. Drop 001 — plain tees and longsleeves, made for the culture.",
-  keywords: ["Soulj", "Abuja streetwear", "Nigerian fashion", "Drop 001"],
+    "Soulj is an Abuja-born streetwear brand. Drop 001 — heavyweight branded tees, made for the culture.",
+  keywords: [
+    "Soulj",
+    "Abuja streetwear",
+    "Nigerian fashion",
+    "Drop 001",
+    "Branded Tees",
+  ],
   openGraph: {
     title: "Soulj — Abuja Streetwear",
-    description: "Abuja-born streetwear. Drop 001 now live.",
+    description: "Abuja-born streetwear. Drop 001 branded tees now live.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.xyz",
     siteName: "Soulj",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
@@ -29,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Soulj — Abuja Streetwear",
-    description: "Abuja-born streetwear. Drop 001 now live.",
+    description: "Abuja-born streetwear. Drop 001 plain tees now live.",
     images: ["/og-image.jpg"],
   },
   icons: {
