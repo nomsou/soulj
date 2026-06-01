@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react"; //
 import { prisma } from "@/lib/prisma";
 import { ProductGrid } from "@/components/shop/ProductGrid";
+import GlobalBrandLoader from "@/components/layout/BrandLoader";
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -10,12 +12,15 @@ export const metadata: Metadata = {
     "Shop Soulj Drop 001 — heavyweight branded tees. Abuja streetwear.",
 };
 
-export default async function ShopPage() {
-  await delay(3000);
+async function ProductsDataFetcher() {
   const products = await prisma.product.findMany({
     orderBy: { createdAt: "desc" },
   });
 
+  return <ProductGrid products={products} />;
+}
+
+export default function ShopPage() {
   return (
     <div
       className="min-h-screen pt-24 pb-20 px-6 md:px-16"
@@ -33,15 +38,17 @@ export default async function ShopPage() {
             Drop 001
           </h1>
         </div>
-        <p
-          className="text-xs tracking-[0.15em] uppercase"
-          style={{ color: "var(--muted)" }}
-        >
-          {products.length} piece{products.length !== 1 ? "s" : ""}
-        </p>
       </div>
 
-      <ProductGrid products={products} />
+      <Suspense
+        fallback={
+          <div className="relative h-[50vh]">
+            <GlobalBrandLoader />
+          </div>
+        }
+      >
+        <ProductsDataFetcher />
+      </Suspense>
     </div>
   );
 }
