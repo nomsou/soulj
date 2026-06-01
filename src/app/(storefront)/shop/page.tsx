@@ -32,7 +32,7 @@ export default function ShopPage() {
             className="text-xs tracking-[0.25em] uppercase mb-2"
             style={{ color: "var(--muted)" }}
           >
-            Abuja
+            Made For The Culture
           </p>
           <h1 className="text-3xl font-medium" style={{ color: "var(--body)" }}>
             Drop 001
