@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default async function ShopPage() {
   await delay(3000);
   const products = await prisma.product.findMany({
-    where: { published: true },
     orderBy: { createdAt: "desc" },
   });
 

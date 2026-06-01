@@ -7,26 +7,37 @@ async function main() {
   await prisma.product.createMany({
     data: [
       {
-        name: "Soulj Branded Tee (BLACK)",
-        slug: "soulj-tee-black",
+        name: "Plain Tee",
+        slug: "plain-tee-black",
         description: "100% cotton. Heavyweight. Made for Abuja.",
         priceNGN: 10000,
         color: "Black",
         size: "M",
         stock: 20,
         images: [],
-        published: true,
+        published: true, // ◄ Available to buy
       },
       {
-        name: "Soulj Branded Tee (WHITE)",
-        slug: "soulj-tee-white",
+        name: "Plain Tee",
+        slug: "plain-tee-white",
         description: "100% cotton. Heavyweight. Made for Abuja.",
         priceNGN: 10000,
         color: "White",
         size: "M",
         stock: 20,
         images: [],
-        published: true,
+        published: true, // ◄ Available to buy
+      },
+      {
+        name: "Longsleeve",
+        slug: "longsleeve-white",
+        description: "Brushed cotton longsleeve. Relaxed fit.",
+        priceNGN: 13000,
+        color: "White",
+        size: "M",
+        stock: 15,
+        images: [],
+        published: false, // ◄ COMING SOON LOCKED FLAG
       },
     ],
   });
@@ -37,7 +48,7 @@ async function main() {
     create: { key: "theme", value: "military" },
   });
 
-  console.log("Seeded products and settings.");
+  console.log("Seeded drop inventory with upcoming previews.");
 }
 
 main()
