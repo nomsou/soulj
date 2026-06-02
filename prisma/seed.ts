@@ -7,8 +7,8 @@ async function main() {
   await prisma.product.createMany({
     data: [
       {
-        name: "Plain Tee",
-        slug: "plain-tee-black",
+        name: "Soulj Tee[BLACK]",
+        slug: "soulj-tee-black",
         description: "100% cotton. Heavyweight. Made for Abuja.",
         priceNGN: 10500,
         color: "Black",
@@ -18,8 +18,8 @@ async function main() {
         published: true,
       },
       {
-        name: "Plain Tee",
-        slug: "plain-tee-white",
+        name: "Soulj Tee[WHITE]",
+        slug: "soulj-tee-white",
         description: "100% cotton. Heavyweight. Made for Abuja.",
         priceNGN: 10500,
         color: "White",
@@ -29,7 +29,7 @@ async function main() {
         published: true,
       },
       {
-        name: "Longsleeve",
+        name: "Soulj Longsleeve",
         slug: "longsleeve-white",
         description: "Brushed cotton longsleeve. Relaxed fit.",
         priceNGN: 13500,

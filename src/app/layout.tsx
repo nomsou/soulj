@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Soulj — Abuja Streetwear",
-    description: "Abuja-born streetwear. Drop 001 plain tees now live.",
+    description: "Abuja-born streetwear. Drop 001 Soulj tees now live.",
     images: ["/og-image.jpg"],
   },
   icons: {
