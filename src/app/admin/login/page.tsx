@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleLogin = async () => {
     if (!password.trim()) return;
@@ -21,7 +21,7 @@ export default function AdminLogin() {
     });
 
     if (res.ok) {
-      router.push("/admin");
+      window.location.href = "/admin";
     } else {
       setError("Incorrect password.");
       setLoading(false);
@@ -70,11 +70,22 @@ export default function AdminLogin() {
           <button
             onClick={handleLogin}
             disabled={loading}
-            className="w-full py-3 text-sm tracking-[0.2em] uppercase font-medium transition-all disabled:opacity-50"
+            className="w-full py-3 text-sm tracking-[0.2em] uppercase font-medium transition-all disabled:opacity-50 mb-2"
             style={{ background: "var(--body)", color: "var(--page)" }}
           >
             {loading ? "..." : "Enter"}
           </button>
+
+          <div className="flex justify-center pt-2">
+            <Link
+              href="/"
+              className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase transition-opacity hover:opacity-60"
+              style={{ color: "var(--muted)" }}
+            >
+              <ArrowLeft size={13} strokeWidth={1.5} />
+              Back to store
+            </Link>
+          </div>
         </div>
       </div>
     </div>

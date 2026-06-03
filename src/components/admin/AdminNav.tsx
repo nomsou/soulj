@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import GlobalBrandLoader from "../layout/BrandLoader";
 import {
   LayoutDashboard,
   Shirt,
@@ -79,16 +80,29 @@ function NavLinks({
 
 export function AdminNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLoggingOut(true);
+
     await fetch("/api/admin/logout", { method: "POST" });
-    window.location.href = "/admin/login";
+
+    router.refresh();
+
+    router.push("/admin/login");
   };
 
   return (
     <>
-      {/* Desktop sidebar */}
+      {isLoggingOut && (
+        <div className="fixed inset-0 z-[9999]">
+          <GlobalBrandLoader />
+        </div>
+      )}
+
       <aside
         className="hidden md:flex w-56 flex-col h-screen shrink-0 sticky top-0"
         style={{ background: "#0A0A0A" }}
@@ -113,18 +127,18 @@ export function AdminNav() {
           className="px-2 py-4 border-t shrink-0"
           style={{ borderColor: "rgba(255,255,255,0.06)" }}
         >
-          <button
+          <Link
+            href="/admin/login"
             onClick={handleLogout}
             className="flex items-center gap-3 px-3 py-2.5 w-full text-sm transition-all rounded-sm hover:bg-white/5"
             style={{ color: "rgba(255,255,255,0.35)" }}
           >
             <LogOut size={15} strokeWidth={1.5} />
             Log out
-          </button>
+          </Link>
         </div>
       </aside>
 
-      {/* Mobile top bar */}
       <div
         className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3"
         style={{ background: "#0A0A0A" }}
@@ -164,14 +178,15 @@ export function AdminNav() {
             className="px-2 py-4 border-t"
             style={{ borderColor: "rgba(255,255,255,0.06)" }}
           >
-            <button
+            <Link
+              href="/admin/login"
               onClick={handleLogout}
               className="flex items-center gap-3 px-3 py-2.5 w-full text-sm transition-all rounded-sm hover:bg-white/5"
               style={{ color: "rgba(255,255,255,0.35)" }}
             >
               <LogOut size={15} strokeWidth={1.5} />
               Log out
-            </button>
+            </Link>
           </div>
         </div>
       )}
