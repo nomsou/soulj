@@ -37,32 +37,18 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
   const router = useRouter();
   const isEdit = !!initial?.id;
 
-  const [form, setForm] = useState<ProductData>(
-    initial
-      ? {
-          name: initial.name ?? "",
-          slug: initial.slug ?? "",
-          description: initial.description ?? "",
-          priceNGN: initial.priceNGN ?? 0,
-          color: initial.color ?? "Black",
-          size: initial.size ?? "M",
-          stock: initial.stock ?? 0,
-          images: initial.images ?? [],
-          published: initial.published ?? false,
-          id: initial.id,
-        }
-      : {
-          name: "",
-          slug: "",
-          description: "",
-          priceNGN: 0,
-          color: "Black",
-          size: "M",
-          stock: 0,
-          images: [],
-          published: false,
-        },
-  );
+  const [form, setForm] = useState<ProductData>({
+    name: initial?.name ?? "",
+    slug: initial?.slug ?? "",
+    description: initial?.description ?? "",
+    priceNGN: initial?.priceNGN ?? 0,
+    color: initial?.color ?? "Black",
+    size: initial?.size ?? "M",
+    stock: initial?.stock ?? 0,
+    images: initial?.images ?? [],
+    published: initial?.published ?? false,
+    id: initial?.id,
+  });
 
   const [loading, setLoading] = useState(false);
 
@@ -90,15 +76,14 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
     }));
   };
 
-  /* ◄ NEW: Handles toggling lookbook items directly into the product images array */
   const toggleLookbookImage = (url: string) => {
     setForm((prev) => {
       const exists = prev.images.includes(url);
       return {
         ...prev,
         images: exists
-          ? prev.images.filter((img) => img !== url) // Remove if already selected
-          : [...prev.images, url], // Append if new selection
+          ? prev.images.filter((img) => img !== url)
+          : [...prev.images, url],
       };
     });
   };
@@ -109,10 +94,17 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
     const url = isEdit ? `/api/products/${initial!.id}` : "/api/products";
     const method = isEdit ? "PUT" : "POST";
 
+    const payload = {
+      ...form,
+      priceNGN: Number(form.priceNGN),
+      stock: Number(form.stock),
+      images: [...form.images],
+    };
+
     await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify(payload),
     });
 
     setLoading(false);
@@ -142,8 +134,11 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
             style={inputStyle}
             value={form.name}
             onChange={(e) => {
-              set("name", e.target.value);
-              set("slug", autoSlug(e.target.value));
+              setForm((prev) => ({
+                ...prev,
+                name: e.target.value,
+                slug: autoSlug(e.target.value),
+              }));
             }}
           />
         </div>
@@ -175,12 +170,11 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
             type="number"
             className={inputCls}
             style={inputStyle}
-            value={form.priceNGN}
+            value={form.priceNGN || ""}
             onChange={(e) => set("priceNGN", Number(e.target.value))}
           />
         </div>
 
-        {/* COLOR + SIZE */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className={labelCls}>Colour</label>
@@ -190,8 +184,9 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
               value={form.color}
               onChange={(e) => set("color", e.target.value)}
             >
-              <option>Black</option>
-              <option>White</option>
+              {/* Added standard normalized case support to match your db */}
+              <option value="Black">Black</option>
+              <option value="White">White</option>
             </select>
           </div>
 
@@ -223,7 +218,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
-        {/* UPDATED: DYNAMIC LOOKBOOK CHIP SELECTION SYSTEM */}
         <div>
           <label className={labelCls}>Product images (first is cover)</label>
 
@@ -269,7 +263,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
             </div>
           )}
 
-          {/* LOOKBOOK THUMBNAIL ASSIGNMENT INTERFACE */}
           <div className="block text-[10px] tracking-[0.05em] uppercase mb-2 text-[#3D4A28]/70">
             Select Lookbook Images to link to this product:
           </div>
@@ -307,14 +300,8 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
               );
             })}
           </div>
-
-          <p className="text-[11px] mt-2" style={{ color: "#3D4A28" }}>
-            Click thumbnails to add/remove them. Adjust presentation hierarchy
-            using the action controls above.
-          </p>
         </div>
 
-        {/* PUBLISHED */}
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
@@ -327,7 +314,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           </label>
         </div>
 
-        {/* ACTIONS */}
         <div className="flex gap-4 pt-4">
           <button
             onClick={handleSubmit}
