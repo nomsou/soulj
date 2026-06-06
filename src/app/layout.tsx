@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
+import InitialSplashProvider from "@/components/layout/InitialSplashProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -64,7 +65,8 @@ export default async function RootLayout({
         )}
         style={{ background: "var(--page)", color: "var(--body)" }}
       >
-        {children}
+        <InitialSplashProvider>{children}</InitialSplashProvider>
+
         <Toaster />
       </body>
     </html>
