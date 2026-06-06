@@ -234,7 +234,7 @@ export function ProductDetail({ product }: { product: Product }) {
               [
                 "Availability",
                 isPreorderActive
-                  ? "Preorder Only (Ships in 2-3 weeks)"
+                  ? "Preorder Only (Ships in 1-2 weeks)"
                   : `In Stock (${currentStock} pieces left)`,
               ],
             ].map(([label, val]) => (
