@@ -73,7 +73,6 @@ export function ProductDetail({ product }: { product: Product }) {
     >
       <div className="px-6 md:px-16 grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-start py-10">
         <div className="space-y-3">
-          {/* Slideshow Core Display Block */}
           <div className="space-y-3">
             <div
               className="relative aspect-[3/4] w-full overflow-hidden flex items-center justify-center"
@@ -81,7 +80,6 @@ export function ProductDetail({ product }: { product: Product }) {
                 background: isBlack ? "var(--card-dark)" : "var(--card)",
               }}
             >
-              {/* ◄ MODEL FIT CALLOUT OVERLAYED AT THE TOP OF THE PRODUCT IMAGE */}
               <div
                 className="absolute top-0 left-0 w-full p-3.5 backdrop-blur-md border-b z-10"
                 style={{
@@ -150,28 +148,6 @@ export function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
           </div>
-
-          {images.length > 1 && (
-            <div className="flex gap-2 flex-wrap">
-              {images.map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedImage(i)}
-                  className="w-16 aspect-square overflow-hidden border-2 transition-all"
-                  style={{
-                    borderColor:
-                      selectedImage === i ? "var(--body)" : "transparent",
-                  }}
-                >
-                  <img
-                    src={img}
-                    alt=""
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
         <div className="md:pt-4 space-y-8">
@@ -255,7 +231,7 @@ export function ProductDetail({ product }: { product: Product }) {
               borderColor: "var(--border)",
               background: isPreorderActive
                 ? "transparent"
-                : "rgba(var(--body-rgb, 0,0,0), 0.02)", // Ultra-subtle texture tint
+                : "rgba(var(--body-rgb, 0,0,0), 0.02)",
             }}
           >
             {isPreorderActive ? (
