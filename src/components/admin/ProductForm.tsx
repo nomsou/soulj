@@ -2,8 +2,23 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { CldUploadWidget } from "next-cloudinary";
 import { X } from "lucide-react";
+
+const LOOKBOOK_ASSETS = [
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_1.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_2.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_3.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_4.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_5.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_6.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_7.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_8.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_9.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_10.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_11.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/look_12.jpg",
+  "https://res.cloudinary.com/df5chn3ki/image/upload/w_1920,c_limit,q_90,f_auto/sleeve.jpg",
+];
 
 type ProductData = {
   id?: string;
@@ -73,6 +88,19 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
       ...prev,
       images: prev.images.filter((img) => img !== url),
     }));
+  };
+
+  /* ◄ NEW: Handles toggling lookbook items directly into the product images array */
+  const toggleLookbookImage = (url: string) => {
+    setForm((prev) => {
+      const exists = prev.images.includes(url);
+      return {
+        ...prev,
+        images: exists
+          ? prev.images.filter((img) => img !== url) // Remove if already selected
+          : [...prev.images, url], // Append if new selection
+      };
+    });
   };
 
   const handleSubmit = async () => {
@@ -195,11 +223,12 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
+        {/* UPDATED: DYNAMIC LOOKBOOK CHIP SELECTION SYSTEM */}
         <div>
           <label className={labelCls}>Product images (first is cover)</label>
 
           {form.images.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="flex flex-wrap gap-2 mb-4">
               {form.images.map((url, i) => {
                 const isCover = i === 0;
 
@@ -240,40 +269,48 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
             </div>
           )}
 
-          <CldUploadWidget
-            uploadPreset={
-              process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ?? ""
-            }
-            onSuccess={(result: any) => {
-              const url = result?.info?.secure_url;
-              if (!url) return;
+          {/* LOOKBOOK THUMBNAIL ASSIGNMENT INTERFACE */}
+          <div className="block text-[10px] tracking-[0.05em] uppercase mb-2 text-[#3D4A28]/70">
+            Select Lookbook Images to link to this product:
+          </div>
 
-              setForm((prev) => ({
-                ...prev,
-                images:
-                  prev.images.length === 0 ? [url] : [...prev.images, url],
-              }));
-            }}
-            options={{
-              multiple: true,
-              maxFiles: 5,
-              resourceType: "image",
-            }}
+          <div
+            className="grid grid-cols-4 sm:grid-cols-6 gap-2 p-2 bg-[#FAFAF5]"
+            style={{ border: "1px solid #D5D2BF" }}
           >
-            {({ open }) => (
-              <button
-                type="button"
-                onClick={() => open()}
-                className="px-4 py-2.5 text-xs tracking-[0.12em] uppercase border"
-                style={{ borderColor: "#D5D2BF", color: "#3D4A28" }}
-              >
-                Upload images
-              </button>
-            )}
-          </CldUploadWidget>
+            {LOOKBOOK_ASSETS.map((url, i) => {
+              const isSelected = form.images.includes(url);
+              return (
+                <div
+                  key={url}
+                  onClick={() => toggleLookbookImage(url)}
+                  className={`relative aspect-[3/4] cursor-pointer bg-black overflow-hidden transition-all ${
+                    isSelected
+                      ? "ring-2 ring-[#0D0D0A] scale-[0.95]"
+                      : "opacity-40 hover:opacity-100"
+                  }`}
+                >
+                  <img
+                    src={url}
+                    alt={`Lookbook ${i + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                  {isSelected && (
+                    <div className="absolute top-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-[#0D0D0A] text-white flex items-center justify-center text-[8px]">
+                      ✓
+                    </div>
+                  )}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/40 text-[8px] text-center text-white py-0.5 font-mono">
+                    L-{i + 1}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-          <p className="text-[11px] mt-1.5" style={{ color: "#3D4A28" }}>
-            First image is automatically used as cover.
+          <p className="text-[11px] mt-2" style={{ color: "#3D4A28" }}>
+            Click thumbnails to add/remove them. Adjust presentation hierarchy
+            using the action controls above.
           </p>
         </div>
 

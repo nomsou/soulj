@@ -38,27 +38,32 @@ export function ProductGrid({ products }: { products: Product[] }) {
             return (
               <div
                 key={p.id}
-                className="space-y-3 opacity-70 cursor-not-allowed select-none group"
+                className="space-y-3 opacity-80 cursor-not-allowed select-none group"
               >
                 <div
-                  className="aspect-[3/4] relative overflow-hidden flex flex-col items-center justify-center transition-colors duration-500 animate-pulse"
-                  style={{ background: "var(--card)" }}
+                  className="aspect-[3/4] relative overflow-hidden flex flex-col items-center justify-center transition-all duration-500"
+                  style={{
+                    background:
+                      p.color.toLowerCase() === "black"
+                        ? "var(--card-dark)"
+                        : "var(--card)",
+                  }}
                 >
-                  <div className="absolute inset-0 bg-black/5 dark:bg-black/20 backdrop-blur-[2px] transition-all group-hover:backdrop-blur-[4px]" />
+                  {p.images && p.images[0] ? (
+                    <img
+                      src={p.images[0]}
+                      alt={p.name}
+                      className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 brightness-50 group-hover:scale-105 transition-transform duration-700"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 animate-pulse bg-black/10 dark:bg-white/5" />
+                  )}
+
+                  <div className="absolute inset-0 bg-black/20 dark:bg-black/40 backdrop-blur-[1px] transition-all group-hover:backdrop-blur-[2px]" />
 
                   <div className="relative z-10 flex flex-col items-center gap-2">
-                    <Lock
-                      size={18}
-                      strokeWidth={1.5}
-                      style={{ color: "var(--body)" }}
-                    />
-                    <span
-                      className="text-[9px] tracking-[0.3em] uppercase font-bold px-2 py-0.5"
-                      style={{
-                        background: "var(--border)",
-                        color: "var(--body)",
-                      }}
-                    >
+                    <Lock size={18} strokeWidth={1.5} className="text-white" />
+                    <span className="text-[9px] tracking-[0.3em] uppercase font-bold px-2 py-0.5 bg-white text-black">
                       Coming Soon
                     </span>
                   </div>
