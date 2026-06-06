@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: NextRequest) {
   const data = await req.json();
+
   const product = await prisma.product.create({ data });
+
+  revalidatePath("/");
+  revalidatePath("/shop");
+  revalidatePath("/admin/products");
+
   return NextResponse.json(product);
 }
 
