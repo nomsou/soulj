@@ -299,13 +299,37 @@ export function CheckoutForm({
             >
               Order summary
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
               {items.map((item) => (
-                <div key={item.id} className="flex justify-between text-sm">
-                  <span style={{ color: "var(--muted)" }}>
-                    {item.name} × {item.quantity}
-                  </span>
-                  <span style={{ color: "var(--body)" }}>
+                <div
+                  key={item.id}
+                  className="flex justify-between items-start text-sm gap-4"
+                >
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span
+                        className="font-medium"
+                        style={{ color: "var(--body)" }}
+                      >
+                        {item.name} × {item.quantity}
+                      </span>
+                      {item.isPreorder && (
+                        <span className="text-[7px] font-bold tracking-wider uppercase bg-[#3D4A28] text-white px-1.5 py-0.5 self-center">
+                          Pre
+                        </span>
+                      )}
+                    </div>
+                    <p
+                      className="text-[11px] uppercase tracking-wider"
+                      style={{ color: "var(--muted)" }}
+                    >
+                      {item.color} — Size {item.size}
+                    </p>
+                  </div>
+                  <span
+                    className="font-medium shrink-0"
+                    style={{ color: "var(--body)" }}
+                  >
                     {formatNGN(item.priceNGN * item.quantity)}
                   </span>
                 </div>
@@ -328,7 +352,6 @@ export function CheckoutForm({
                   {formatNGN(currentDeliveryFee)}
                 </span>
               </div>
-
               <div
                 className="flex justify-between text-sm font-medium pt-3 border-t"
                 style={{ borderColor: "var(--border)" }}

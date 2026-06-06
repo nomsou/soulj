@@ -27,8 +27,7 @@ type ProductData = {
   description: string;
   priceNGN: number;
   color: string;
-  size: string;
-  stock: number;
+  sizesStock: Record<string, number>; // ◄ UPDATED TYPE MAP
   images: string[];
   published: boolean;
 };
@@ -43,19 +42,29 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
     description: initial?.description ?? "",
     priceNGN: initial?.priceNGN ?? 0,
     color: initial?.color ?? "Black",
-    size: initial?.size ?? "M",
-    stock: initial?.stock ?? 0,
+    // ◄ INITIALIZATION: Setup defaults for all sizing streams cleanly
+    sizesStock: initial?.sizesStock ?? { M: 0, L: 0, XL: 0, "2XL": 0 },
     images: initial?.images ?? [],
     published: initial?.published ?? false,
     id: initial?.id,
   });
 
   const [loading, setLoading] = useState(false);
-
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   const set = <K extends keyof ProductData>(key: K, val: ProductData[K]) => {
     setForm((p) => ({ ...p, [key]: val }));
+  };
+
+  // Helper function to update single dynamic size numbers inside the nested object state
+  const handleSizeStockChange = (sizeKey: string, numericVal: number) => {
+    setForm((prev) => ({
+      ...prev,
+      sizesStock: {
+        ...prev.sizesStock,
+        [sizeKey]: Math.max(0, numericVal), // Prevents negative stock input anomalies
+      },
+    }));
   };
 
   const autoSlug = (name: string) =>
@@ -121,7 +130,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
     const payload = {
       ...form,
       priceNGN: Number(form.priceNGN),
-      stock: Number(form.stock),
       images: [...form.images],
     };
 
@@ -197,46 +205,47 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={labelCls}>Colour</label>
-            <select
-              className={inputCls}
-              style={inputStyle}
-              value={form.color}
-              onChange={(e) => set("color", e.target.value)}
-            >
-              <option value="Black">Black</option>
-              <option value="White">White</option>
-            </select>
-          </div>
-
-          <div>
-            <label className={labelCls}>Size</label>
-            <select
-              className={inputCls}
-              style={inputStyle}
-              value={form.size}
-              onChange={(e) => set("size", e.target.value)}
-            >
-              <option>XS</option>
-              <option>S</option>
-              <option>M</option>
-              <option>L</option>
-              <option>XL</option>
-            </select>
-          </div>
-        </div>
-
         <div>
-          <label className={labelCls}>Stock</label>
-          <input
-            type="number"
+          <label className={labelCls}>Colour</label>
+          <select
             className={inputCls}
             style={inputStyle}
-            value={form.stock}
-            onChange={(e) => set("stock", Number(e.target.value))}
-          />
+            value={form.color}
+            onChange={(e) => set("color", e.target.value)}
+          >
+            <option value="Black">Black</option>
+            <option value="White">White</option>
+          </select>
+        </div>
+
+        {/* ◄ FIXED GRID PANEL: Replaced layout inputs with concurrent variant controllers */}
+        <div
+          className="bg-[#FAFAF5] p-4 border space-y-4"
+          style={{ borderColor: "#D5D2BF" }}
+        >
+          <span className="block text-[11px] font-bold tracking-widest uppercase text-[#3D4A28]">
+            Sizing Inventory Matrix
+          </span>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {(["M", "L", "XL", "2XL"] as const).map((sizeKey) => (
+              <div key={sizeKey} className="space-y-1">
+                <label className="block font-mono text-[10px] font-bold text-neutral-500">
+                  Size {sizeKey}
+                </label>
+                <input
+                  type="number"
+                  placeholder="0"
+                  className="w-full px-2.5 py-1.5 text-xs outline-none border bg-white"
+                  style={{ borderColor: "#D5D2BF" }}
+                  value={form.sizesStock[sizeKey] ?? 0}
+                  onChange={(e) =>
+                    handleSizeStockChange(sizeKey, Number(e.target.value))
+                  }
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -253,7 +262,7 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
                 return (
                   <div
                     key={url}
-                    draggable /* ◄ Native Drag toggle parameter */
+                    draggable
                     onDragStart={() => handleDragStart(i)}
                     onDragOver={(e) => handleDragOver(e, i)}
                     onDragEnd={handleDragEnd}
@@ -266,7 +275,7 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
                     <img
                       src={url}
                       alt=""
-                      className="w-full h-full object-cover pointer-events-none" // Prevents generic ghosting glitches
+                      className="w-full h-full object-cover pointer-events-none"
                     />
 
                     <button
@@ -298,7 +307,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
             </div>
           )}
 
-          {/* LOWER GRID GALLERY PICKER LIST (Left untouched) */}
           <div className="block text-[10px] tracking-[0.05em] uppercase mb-2 text-[#3D4A28]/70">
             Select Lookbook Images to link to this product:
           </div>

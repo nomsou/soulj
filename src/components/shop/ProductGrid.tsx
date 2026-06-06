@@ -9,10 +9,8 @@ type Product = {
   name: string;
   slug: string;
   color: string;
-  size: string;
   priceNGN: number;
   images: string[];
-  stock: number;
   published: boolean;
 };
 
@@ -94,7 +92,7 @@ export function ProductGrid({ products }: { products: Product[] }) {
             );
           }
 
-          return <ProductCard key={p.id} product={p} />;
+          return <ProductCard key={p.id} product={p as any} />;
         })}
       </div>
     </div>

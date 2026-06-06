@@ -3,6 +3,7 @@ import { persist } from "zustand/middleware";
 
 export type CartItem = {
   id: string;
+  productId: string;
   name: string;
   slug: string;
   color: string;
@@ -10,6 +11,7 @@ export type CartItem = {
   priceNGN: number;
   image: string;
   quantity: number;
+  isPreorder: boolean;
 };
 
 type CartStore = {
@@ -31,12 +33,14 @@ export const useCart = create<CartStore>()(
         if (existing) {
           set((s) => ({
             items: s.items.map((i) =>
-              i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i,
+              i.id === item.id
+                ? { ...i, quantity: i.quantity + item.quantity }
+                : i,
             ),
           }));
         } else {
           set((s) => ({
-            items: [...s.items, { ...item, quantity: 1 }],
+            items: [...s.items, item],
           }));
         }
       },

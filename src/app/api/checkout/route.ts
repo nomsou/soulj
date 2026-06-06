@@ -22,17 +22,31 @@ export async function POST(req: NextRequest) {
   try {
     const { customerInfo, items } = await req.json();
 
-    const productIds = items.map((item: any) => item.id);
+    const parsedItems = items.map((item: any) => {
+      const parts = item.id.split("-");
+
+      const baseProductId = parts[0];
+      return {
+        ...item,
+        databaseProductId: baseProductId,
+      };
+    });
+
+    const productIds = parsedItems.map((item: any) => item.databaseProductId);
+
     const dbProducts = await prisma.product.findMany({
       where: { id: { in: productIds } },
     });
 
     let calculatedSubtotalNGN = 0;
-    for (const clientItem of items) {
-      const dbProduct = dbProducts.find((p) => p.id === clientItem.id);
+
+    for (const clientItem of parsedItems) {
+      const dbProduct = dbProducts.find(
+        (p) => p.id === clientItem.databaseProductId,
+      );
       if (!dbProduct) {
         return NextResponse.json(
-          { error: "Product not found" },
+          { error: `Product not found: ${clientItem.name}` },
           { status: 404 },
         );
       }
@@ -88,6 +102,14 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json();
 
+    if (!res.ok || !data.status) {
+      console.error("[PAYSTACK GATEWAY REFUSAL]:", data);
+      return NextResponse.json(
+        { error: data.message || "Paystack initialization rejected" },
+        { status: 400 },
+      );
+    }
+
     await prisma.order.create({
       data: {
         reference,
@@ -113,9 +135,9 @@ export async function POST(req: NextRequest) {
       accessCode: data.data.access_code,
     });
   } catch (error) {
-    console.error(error);
+    console.error("[CHECKOUT SYSTEM FAILURE]:", error);
     return NextResponse.json(
-      { error: "Something went wrong" },
+      { error: "Internal processing exception" },
       { status: 500 },
     );
   }

@@ -4,8 +4,6 @@ import { prisma } from "@/lib/prisma";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import GlobalBrandLoader from "@/components/layout/BrandLoader";
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const metadata: Metadata = {
   title: "Shop",
   description:
@@ -14,10 +12,12 @@ export const metadata: Metadata = {
 
 async function ProductsDataFetcher() {
   const products = await prisma.product.findMany({
+    where: {
+    },
     orderBy: { position: "asc" },
   });
 
-  return <ProductGrid products={products} />;
+  return <ProductGrid products={products as any} />;
 }
 
 export default function ShopPage() {

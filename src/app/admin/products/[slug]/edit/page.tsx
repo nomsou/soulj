@@ -24,8 +24,13 @@ export default async function EditProduct({
         description: product.description ?? "",
         priceNGN: product.priceNGN,
         color: product.color,
-        size: product.size,
-        stock: product.stock,
+
+        sizesStock: (product.sizesStock ?? {
+          M: 0,
+          L: 0,
+          XL: 0,
+          "2XL": 0,
+        }) as Record<string, number>,
         images: product.images,
         published: product.published,
       }}

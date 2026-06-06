@@ -14,6 +14,8 @@ export function CartPage() {
   const baseDefaultPlaceholderFee = 2500;
   const initialEstimatedGrandTotal = total() + baseDefaultPlaceholderFee;
 
+  const containsPreorderSelection = items.some((item) => item.isPreorder);
+
   if (items.length === 0) {
     return (
       <div
@@ -100,12 +102,20 @@ export function CartPage() {
               <div className="flex-1 flex flex-col justify-between">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p
-                      className="text-sm font-medium mb-1"
-                      style={{ color: "var(--body)" }}
-                    >
-                      {item.name}
-                    </p>
+                    <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      <p
+                        className="text-sm font-medium"
+                        style={{ color: "var(--body)" }}
+                      >
+                        {item.name}
+                      </p>
+
+                      {item.isPreorder && (
+                        <span className="text-[8px] tracking-wider uppercase bg-[#3D4A28] text-white px-1.5 py-0.5 font-bold">
+                          Preorder
+                        </span>
+                      )}
+                    </div>
                     <p
                       className="text-xs tracking-[0.12em] uppercase"
                       style={{ color: "var(--muted)" }}
@@ -214,6 +224,35 @@ export function CartPage() {
               Continue shopping
             </Link>
           </div>
+
+          {containsPreorderSelection && (
+            <div
+              className="mt-4 border p-4 text-[11px] font-mono space-y-2 transition-all"
+              style={{
+                borderColor: "var(--border)",
+                background: "rgba(var(--body-rgb, 0,0,0), 0.02)",
+              }}
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                <p
+                  className="font-bold uppercase tracking-[0.1em]"
+                  style={{ color: "var(--body)" }}
+                >
+                  Split delivery notice
+                </p>
+              </div>
+              <p
+                className="leading-relaxed font-sans opacity-85"
+                style={{ color: "var(--body)" }}
+              >
+                Because your cart includes a preorder piece, everything in this
+                order will ship together once the final garments are cut and
+                finished (approx. 2–3 weeks). If you want your ready-made items
+                immediately, please place them in a separate order.
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

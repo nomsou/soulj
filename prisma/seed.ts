@@ -9,10 +9,9 @@ async function main() {
       description: "100% cotton. Heavyweight. Made for Abuja.",
       priceNGN: 10500,
       color: "Black",
-      size: "M",
-      stock: 20,
       published: true,
       position: 1,
+      sizesStock: { M: 0, L: 9, XL: 0, "2XL": 0 },
     },
     {
       name: "Soulj Tee[WHITE]",
@@ -20,10 +19,9 @@ async function main() {
       description: "100% cotton. Heavyweight. Made for Abuja.",
       priceNGN: 10500,
       color: "White",
-      size: "M",
-      stock: 20,
       published: true,
       position: 2,
+      sizesStock: { M: 0, L: 10, XL: 0, "2XL": 0 },
     },
     {
       name: "Soulj Longsleeve",
@@ -31,14 +29,19 @@ async function main() {
       description: "Brushed cotton longsleeve. Relaxed fit.",
       priceNGN: 13500,
       color: "White",
-      size: "M",
-      stock: 15,
-      published: false,
+      published: true,
       position: 3,
+      sizesStock: { M: 0, L: 0, XL: 0, "2XL": 0 },
     },
   ];
 
   for (const item of defaultProducts) {
+    const existingProduct = await prisma.product.findUnique({
+      where: { slug: item.slug },
+    });
+
+    const existingImages = existingProduct ? existingProduct.images : [];
+
     await prisma.product.upsert({
       where: { slug: item.slug },
       update: {
@@ -46,9 +49,10 @@ async function main() {
         description: item.description,
         priceNGN: item.priceNGN,
         color: item.color,
-        size: item.size,
-        stock: item.stock,
+        sizesStock: item.sizesStock,
         position: item.position,
+        published: item.published,
+        images: existingImages,
       },
       create: {
         ...item,
@@ -64,7 +68,7 @@ async function main() {
   });
 
   console.log(
-    "Seeded and synchronized drop inventory without altering custom images.",
+    "⚡️ Done. Database stock synchronized without touching active images.",
   );
 }
 

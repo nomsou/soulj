@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Product {
@@ -14,8 +14,7 @@ model Product {
   description String?
   priceNGN    Float
   color       String
-  size        String   @default("M")
-  stock       Int      @default(0)
+  sizesStock  Json     // Holds: { "M": 0, "L": 9, "XL": 0, "2XL": 0 }
   images      String[]
   published   Boolean  @default(false)
   position    Int      @default(0) 

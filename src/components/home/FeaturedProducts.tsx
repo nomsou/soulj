@@ -87,6 +87,16 @@ export async function FeaturedProducts() {
             );
           }
 
+          // ◄ DYNAMIC WORK: Safely extract which sizes actually have units on the racks
+          const stockMap = (p.sizesStock || {}) as Record<string, number>;
+          const availableSizes = Object.keys(stockMap).filter(
+            (size) => Number(stockMap[size]) > 0,
+          );
+          const sizeLabelText =
+            availableSizes.length > 0
+              ? `Sizes: ${availableSizes.join(", ")}`
+              : "Out of stock";
+
           return (
             <Link
               key={p.id}
@@ -128,11 +138,12 @@ export async function FeaturedProducts() {
                   {formatNGN(p.priceNGN)}
                 </p>
               </div>
+
               <p
-                className="text-xs uppercase tracking-widest"
+                className="text-xs uppercase tracking-widest opacity-80"
                 style={{ color: "var(--muted)" }}
               >
-                {p.color} — Size {p.size}
+                {p.color} — {sizeLabelText}
               </p>
             </Link>
           );
