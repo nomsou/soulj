@@ -52,6 +52,8 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
 
   const [loading, setLoading] = useState(false);
 
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
   const set = <K extends keyof ProductData>(key: K, val: ProductData[K]) => {
     setForm((p) => ({ ...p, [key]: val }));
   };
@@ -88,6 +90,28 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
     });
   };
 
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    setForm((prev) => {
+      const remainingImages = [...prev.images];
+      const targetItem = remainingImages.splice(draggedIndex, 1)[0];
+      remainingImages.splice(index, 0, targetItem);
+
+      setDraggedIndex(index);
+      return { ...prev, images: remainingImages };
+    });
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
   const handleSubmit = async () => {
     setLoading(true);
 
@@ -114,9 +138,7 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
 
   const inputCls =
     "w-full px-3 py-2.5 text-sm outline-none border text-[#0D0D0A] bg-[#FAFAF5]";
-
   const inputStyle = { borderColor: "#D5D2BF" };
-
   const labelCls =
     "block text-[10px] tracking-[0.1em] uppercase mb-1.5 text-[#3D4A28]";
 
@@ -184,7 +206,6 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
               value={form.color}
               onChange={(e) => set("color", e.target.value)}
             >
-              {/* Added standard normalized case support to match your db */}
               <option value="Black">Black</option>
               <option value="White">White</option>
             </select>
@@ -219,25 +240,39 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
         </div>
 
         <div>
-          <label className={labelCls}>Product images (first is cover)</label>
+          <label className={labelCls}>
+            Product images (Drag thumbnails to rearrange order)
+          </label>
 
           {form.images.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
               {form.images.map((url, i) => {
                 const isCover = i === 0;
+                const isItemBeingDragged = i === draggedIndex;
 
                 return (
-                  <div key={url} className="relative w-20 h-24">
+                  <div
+                    key={url}
+                    draggable /* ◄ Native Drag toggle parameter */
+                    onDragStart={() => handleDragStart(i)}
+                    onDragOver={(e) => handleDragOver(e, i)}
+                    onDragEnd={handleDragEnd}
+                    className={`relative w-20 h-24 cursor-grab active:cursor-grabbing select-none transition-all duration-200 ${
+                      isItemBeingDragged
+                        ? "opacity-30 scale-95 border-2 border-dashed border-[#0D0D0A]"
+                        : "opacity-100"
+                    }`}
+                  >
                     <img
                       src={url}
                       alt=""
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover pointer-events-none" // Prevents generic ghosting glitches
                     />
 
                     <button
                       type="button"
                       onClick={() => removeImage(url)}
-                      className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-black/60"
+                      className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-black/60 z-10"
                     >
                       <X size={10} color="white" />
                     </button>
@@ -246,14 +281,14 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
                       <button
                         type="button"
                         onClick={() => makeCover(url)}
-                        className="absolute bottom-1 left-1 text-[9px] px-1 py-0.5 bg-black/70 text-white"
+                        className="absolute bottom-1 left-1 text-[9px] px-1 py-0.5 bg-black/70 text-white z-10"
                       >
-                        Make cover
+                        Cover
                       </button>
                     )}
 
                     {isCover && (
-                      <div className="absolute top-1 left-1 text-[9px] px-1 py-0.5 bg-green-600 text-white">
+                      <div className="absolute top-1 left-1 text-[9px] px-1 py-0.5 bg-black text-[#E8E2C8] uppercase font-bold tracking-widest z-10">
                         Cover
                       </div>
                     )}
@@ -263,6 +298,7 @@ export function ProductForm({ initial }: { initial?: Partial<ProductData> }) {
             </div>
           )}
 
+          {/* LOWER GRID GALLERY PICKER LIST (Left untouched) */}
           <div className="block text-[10px] tracking-[0.05em] uppercase mb-2 text-[#3D4A28]/70">
             Select Lookbook Images to link to this product:
           </div>
