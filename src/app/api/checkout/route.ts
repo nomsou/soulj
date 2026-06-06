@@ -24,11 +24,11 @@ export async function POST(req: NextRequest) {
 
     const parsedItems = items.map((item: any) => {
       const parts = item.id.split("-");
-
       const baseProductId = parts[0];
       return {
         ...item,
         databaseProductId: baseProductId,
+        extractedSize: parts[1] || "L",
       };
     });
 
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
     });
 
     let calculatedSubtotalNGN = 0;
+    const securedItems = [];
 
     for (const clientItem of parsedItems) {
       const dbProduct = dbProducts.find(
@@ -50,7 +51,19 @@ export async function POST(req: NextRequest) {
           { status: 404 },
         );
       }
+
       calculatedSubtotalNGN += dbProduct.priceNGN * clientItem.quantity;
+
+      securedItems.push({
+        id: clientItem.id,
+        databaseProductId: clientItem.databaseProductId,
+        name: dbProduct.name,
+        color: dbProduct.color,
+        priceNGN: dbProduct.priceNGN,
+        quantity: clientItem.quantity,
+        size: clientItem.extractedSize,
+        isPreorder: clientItem.isPreorder || false,
+      });
     }
 
     const deliveryFeeNGN = getShippingFee(customerInfo.state);
@@ -120,7 +133,7 @@ export async function POST(req: NextRequest) {
         address: customerInfo.address,
         city: customerInfo.city,
         state: customerInfo.state,
-        items,
+        items: securedItems,
         subtotalNGN: calculatedSubtotalNGN,
         deliveryFee: deliveryFeeNGN,
         totalNGN: finalPaystackTotalNGN,
