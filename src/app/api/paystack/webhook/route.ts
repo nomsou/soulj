@@ -138,10 +138,10 @@ export async function POST(req: NextRequest) {
             <h2 style="font-size:22px;font-weight:500;margin-bottom:8px;">
               Thank you, ${order.firstName}.
             </h2>
-            <p style="font-size:14px;color:#3D4A28;margin-bottom:32px;">
-              Your order has been confirmed. We'll reach out when it ships.
-              ${items.some((i: any) => i.isPreorder) ? " If your order contains a preorder piece, your package will ship consolidated once everything finishes production." : ""}
-            </p>
+      <p style="font-size:14px;color:#3D4A28;margin-bottom:32px;">
+  Your order has been confirmed. We'll reach out when it ships.
+  ${items.some((i: any) => i.isPreorder) ? " Note: Since your order includes a preorder piece, everything will ship together once production is complete." : ""}
+</p>
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
               ${itemsTableRows}
               <tr>
