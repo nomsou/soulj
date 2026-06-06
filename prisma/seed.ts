@@ -29,7 +29,7 @@ async function main() {
       description: "Brushed cotton longsleeve. Relaxed fit.",
       priceNGN: 13500,
       color: "White",
-      published: true,
+      published: false,
       position: 3,
       sizesStock: { M: 0, L: 0, XL: 0, "2XL": 0 },
     },

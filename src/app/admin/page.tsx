@@ -33,7 +33,6 @@ export default async function AdminOverview() {
     totalAudienceSet.add(o.email.toLowerCase().trim()),
   );
 
-  // Revenue from confirmed orders only
   const revenueOrders = await prisma.order.findMany({
     where: { status: { in: ["PAID", "DELIVERED"] } },
     select: { totalNGN: true },
