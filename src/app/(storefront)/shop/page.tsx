@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Suspense } from "react"; //
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
 import { ProductGrid } from "@/components/shop/ProductGrid";
 import GlobalBrandLoader from "@/components/layout/BrandLoader";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 async function ProductsDataFetcher() {
   const products = await prisma.product.findMany({
-    orderBy: { createdAt: "desc" },
+    orderBy: { position: "asc" },
   });
 
   return <ProductGrid products={products} />;

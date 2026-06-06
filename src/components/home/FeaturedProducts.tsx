@@ -6,7 +6,7 @@ import { Lock } from "lucide-react";
 export async function FeaturedProducts() {
   const products = await prisma.product.findMany({
     take: 3,
-    orderBy: { createdAt: "desc" },
+    orderBy: { position: "asc" },
   });
 
   return (
