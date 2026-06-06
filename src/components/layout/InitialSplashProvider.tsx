@@ -28,15 +28,7 @@ export default function InitialSplashProvider({
         </div>
       )}
 
-      <div
-        className={
-          isFirstLoad
-            ? "opacity-0"
-            : "opacity-100 transition-opacity duration-700 ease-out"
-        }
-      >
-        {children}
-      </div>
+      <div className={isFirstLoad ? "hidden" : "block"}>{children}</div>
     </>
   );
 }
