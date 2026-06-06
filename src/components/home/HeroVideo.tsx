@@ -50,30 +50,30 @@ export function HeroVideo() {
         muted
         loop
         playsInline
+        preload="auto"
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/videos/hero.mp4" type="video/mp4" />
+        <source
+          src="https://res.cloudinary.com/df5chn3ki/video/upload/w_1920,c_limit,q_92,f_auto,vc_auto/hero_oula98.mp4"
+          type="video/mp4"
+        />
       </video>
 
-      {/* AUDIO UI */}
       {!audioEnabled ? (
         showPrompt && (
           <button
             onClick={enableAudio}
             className="
-  absolute top-16 right-6 z-20
-  px-4 py-2 text-xs tracking-[0.2em] uppercase
-  text-white
-
-  bg-black/70
-  backdrop-blur-md
-  border border-white/20
-  rounded-full
-
-  shadow-[0_8px_30px_rgba(0,0,0,0.35)]
-
-  sound-pulse
-"
+              absolute top-16 right-6 z-20
+              px-4 py-2 text-xs tracking-[0.2em] uppercase
+              text-white
+              bg-black/70
+              backdrop-blur-md
+              border border-white/20
+              rounded-full
+              shadow-[0_8px_30px_rgba(0,0,0,0.35)]
+              sound-pulse
+            "
           >
             Tap to enable sound
           </button>
@@ -88,7 +88,6 @@ export function HeroVideo() {
         </button>
       )}
 
-      {/* content */}
       <div className="relative z-10 flex flex-col justify-end h-full px-6 md:px-16 pb-16 md:pb-24">
         <p
           className="text-xs tracking-[0.3em] uppercase mb-3"
