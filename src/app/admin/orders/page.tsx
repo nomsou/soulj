@@ -109,7 +109,8 @@ export default async function AdminOrders() {
                 <div className="space-y-0.5">
                   {items.map((item: any, i: number) => (
                     <p key={i} className="text-xs" style={{ color: "#3D4A28" }}>
-                      {item.name} × {item.quantity} — {item.color}
+                      {item.name} × {item.quantity} — {item.color}{" "}
+                      {item.size ? `(${item.size})` : ""}
                     </p>
                   ))}
                 </div>
