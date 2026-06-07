@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.xyz",
   ),
   title: {
-    default: "Soulj - Abuja Streetwear",
+    default: "Soulj - Streetwear",
     template: "%s — Soulj",
   },
   description:
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "Branded Tees",
   ],
   openGraph: {
-    title: "Soulj — Abuja Streetwear",
+    title: "Soulj - Streetwear",
     description: "Abuja-born streetwear. Drop 001 branded tees now live.",
     url: process.env.NEXT_PUBLIC_SITE_URL || "https://soulj.xyz",
     siteName: "Soulj",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Soulj — Abuja Streetwear",
+    title: "Soulj - Streetwear",
     description: "Abuja-born streetwear. Drop 001 Soulj tees now live.",
     images: ["/og-image.jpg"],
   },
