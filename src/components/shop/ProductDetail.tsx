@@ -200,6 +200,7 @@ export function ProductDetail({ product }: { product: Product }) {
               })}
             </div>
           </div>
+
           <div
             className="space-y-3 border-t border-b py-6"
             style={{ borderColor: "var(--border)" }}
@@ -211,7 +212,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 "Availability",
                 isPreorderActive
                   ? "Preorder Only (Ships in 1-2 weeks)"
-                  : `In Stock (${currentStock} pieces left)`,
+                  : `In Stock (${currentStock} ${currentStock === 1 ? "piece" : "pieces"} left)`,
               ],
             ].map(([label, val]) => (
               <div key={label} className="flex justify-between text-sm">
@@ -225,6 +226,7 @@ export function ProductDetail({ product }: { product: Product }) {
               </div>
             ))}
           </div>
+
           <div
             className="p-3.5 text-xs font-mono border space-y-2 transition-all duration-300"
             style={{
@@ -265,12 +267,13 @@ export function ProductDetail({ product }: { product: Product }) {
                   style={{ color: "var(--muted)" }}
                   className="leading-relaxed font-sans text-[11px]"
                 >
-                  Last {currentStock} pieces left on our racks. Standard Abuja
-                  delivery within 1 week.
+                  Last {currentStock} {currentStock === 1 ? "piece" : "pieces"}{" "}
+                  left on our racks. Standard Abuja delivery within 1 week.
                 </p>
               </>
             )}
           </div>
+
           {product.description && (
             <p
               className="text-sm leading-relaxed"
