@@ -266,7 +266,7 @@ export function ProductDetail({ product }: { product: Product }) {
                   className="leading-relaxed font-sans text-[11px]"
                 >
                   Last {currentStock} pieces left on our racks. Standard Abuja
-                  delivery within 24–48 hours.
+                  delivery within 1 week.
                 </p>
               </>
             )}

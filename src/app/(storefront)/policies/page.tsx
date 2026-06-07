@@ -15,7 +15,7 @@ const sections = [
       "Flat delivery fee of ₦2,500 applies exclusively to orders within Abuja FCT.",
       "For deliveries to other states, shipping fees are calculated at checkout depending on the courier service rate.",
       "Orders are processed within 1–2 business days after payment is confirmed.",
-      "Delivery typically takes 1–2 business days within Abuja, and 2–5 business days for other states depending on your location.",
+      "Delivery typically takes 5 business days within Abuja, and 10 business days for other states depending on your location.",
       "You will receive a notification with tracking details once your order has been dispatched.",
     ],
   },
