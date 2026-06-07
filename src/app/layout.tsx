@@ -5,6 +5,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { prisma } from "@/lib/prisma";
+import { Analytics } from "@vercel/analytics/next";
 import InitialSplashProvider from "@/components/layout/InitialSplashProvider";
 
 export const metadata: Metadata = {
@@ -68,6 +69,7 @@ export default async function RootLayout({
         <InitialSplashProvider>{children}</InitialSplashProvider>
 
         <Toaster />
+        <Analytics />
       </body>
     </html>
   );
