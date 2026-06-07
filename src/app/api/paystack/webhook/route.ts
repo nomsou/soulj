@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/mailer";
+import { revalidatePath } from "next/cache";
 import crypto from "crypto";
 
 export async function POST(req: NextRequest) {
@@ -52,7 +53,6 @@ export async function POST(req: NextRequest) {
     const reference = event.data.reference;
     const ultimateAmountPaid = event.data.amount / 100;
 
-    // Find the order first
     let order;
     try {
       order = await prisma.order.findUnique({ where: { reference } });
@@ -62,13 +62,11 @@ export async function POST(req: NextRequest) {
         reference,
         err,
       );
-      // Return 200 so Paystack doesn't retry endlessly
       return NextResponse.json({ received: true });
     }
 
     if (!order) {
       console.error("[WEBHOOK] No order found for reference:", reference);
-      // Return 200 — could be a transaction not initiated through our system
       return NextResponse.json({ received: true });
     }
 
@@ -77,7 +75,54 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-    // Update order to PAID
+    try {
+      const itemsToProcess = (
+        Array.isArray(order.items) ? order.items : []
+      ) as any[];
+
+      for (const item of itemsToProcess) {
+        if (item.databaseProductId && !item.isPreorder) {
+          const product = await prisma.product.findUnique({
+            where: { id: item.databaseProductId },
+          });
+
+          if (product) {
+            const currentStockMap = (product.sizesStock || {
+              M: 0,
+              L: 0,
+              XL: 0,
+              "2XL": 0,
+            }) as Record<string, number>;
+            const purchaseSize = item.size || "L";
+            const purchaseQuantity = item.quantity || 1;
+
+            const oldStock = Number(currentStockMap[purchaseSize]) || 0;
+            const newStock = Math.max(0, oldStock - purchaseQuantity);
+
+            currentStockMap[purchaseSize] = newStock;
+
+            await prisma.product.update({
+              where: { id: item.databaseProductId },
+              data: { sizesStock: currentStockMap },
+            });
+
+            console.log(
+              `[INVENTORY UPDATE]: Subtracted ${purchaseQuantity} from ${product.name} (Size ${purchaseSize}). Stock changed from ${oldStock} to ${newStock}`,
+            );
+
+            if (product.slug) {
+              revalidatePath(`/shop/${product.slug}`);
+            }
+          }
+        }
+      }
+    } catch (stockError) {
+      console.error(
+        "[CRITICAL WEBHOOK INVENTORY UPDATE EXCEPTION]:",
+        stockError,
+      );
+    }
+
     try {
       order = await prisma.order.update({
         where: { reference },
@@ -92,7 +137,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true });
     }
 
-    // Auto-subscribe customer
+    revalidatePath("/");
+    revalidatePath("/shop");
+    revalidatePath("/admin/orders");
+
     try {
       await prisma.subscriber.upsert({
         where: { email: order.email.toLowerCase().trim() },
@@ -101,7 +149,6 @@ export async function POST(req: NextRequest) {
       });
     } catch (err) {
       console.error("[WEBHOOK] Subscriber upsert failed:", err);
-      // Non-critical, continue
     }
 
     const items = (Array.isArray(order.items) ? order.items : []) as any[];
@@ -125,7 +172,6 @@ export async function POST(req: NextRequest) {
       })
       .join("");
 
-    // Customer confirmation email
     try {
       await sendEmail({
         to: order.email.toLowerCase().trim(),
@@ -138,10 +184,10 @@ export async function POST(req: NextRequest) {
             <h2 style="font-size:22px;font-weight:500;margin-bottom:8px;">
               Thank you, ${order.firstName}.
             </h2>
-      <p style="font-size:14px;color:#3D4A28;margin-bottom:32px;">
-  Your order has been confirmed. We'll reach out when it ships.
-  ${items.some((i: any) => i.isPreorder) ? " Note: Since your order includes a preorder piece, everything will ship together once production is complete." : ""}
-</p>
+            <p style="font-size:14px;color:#3D4A28;margin-bottom:32px;">
+              Your order has been confirmed. We'll reach out when it ships.
+              ${items.some((i: any) => i.isPreorder) ? " Note: Since your order includes a preorder piece, everything will ship together once production is complete." : ""}
+            </p>
             <table style="width:100%;border-collapse:collapse;margin-bottom:24px;">
               ${itemsTableRows}
               <tr>
@@ -199,7 +245,6 @@ export async function POST(req: NextRequest) {
       console.error("[WEBHOOK] Customer email failed:", err);
     }
 
-    // Admin notification email
     try {
       await sendEmail({
         to: (process.env.ADMIN_EMAIL || "support@soulj.xyz")
