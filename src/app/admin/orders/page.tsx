@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { formatNGN } from "@/lib/utils";
 import { OrderStatusSelect } from "@/components/admin/OrderStatusSelect";
+import { ExportOrdersButton } from "@/components/admin/ExportOrdersButton";
 import { Order } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -26,12 +27,12 @@ export default async function AdminOrders() {
 
   return (
     <div className="p-4 md:p-8">
-      <h1
-        className="text-xl font-medium mb-6 md:mb-8"
-        style={{ color: "#0D0D0A" }}
-      >
-        Orders
-      </h1>
+      <div className="flex items-center justify-between mb-6 md:mb-8">
+        <h1 className="text-xl font-medium" style={{ color: "#0D0D0A" }}>
+          Orders
+        </h1>
+        <ExportOrdersButton />
+      </div>
 
       {databaseError && (
         <div className="mb-6 p-4 text-xs tracking-[0.05em] border border-[#E24B4A] bg-[#E24B4A]/10 text-[#E24B4A]">
