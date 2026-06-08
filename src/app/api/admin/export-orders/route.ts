@@ -9,6 +9,7 @@ export async function GET() {
 
   const rows: string[] = [];
 
+  // Header row
   rows.push(
     [
       "Reference",
@@ -24,6 +25,7 @@ export async function GET() {
       "Items",
       "Subtotal (NGN)",
       "Delivery Fee (NGN)",
+      "Processing Fee (NGN)",
       "Total (NGN)",
       "Status",
     ]
@@ -53,6 +55,10 @@ export async function GET() {
       hour12: true,
     });
 
+    // Derive processing fee the same way the webhook and order confirmation page do
+    const baseTotal = order.subtotalNGN + order.deliveryFee;
+    const processingFee = Math.max(0, order.totalNGN - baseTotal);
+
     const row = [
       order.reference,
       dateStr,
@@ -67,6 +73,7 @@ export async function GET() {
       itemsSummary,
       order.subtotalNGN.toFixed(2),
       order.deliveryFee.toFixed(2),
+      processingFee.toFixed(2),
       order.totalNGN.toFixed(2),
       order.status,
     ]
