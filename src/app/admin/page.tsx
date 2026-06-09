@@ -35,9 +35,16 @@ export default async function AdminOverview() {
 
   const revenueOrders = await prisma.order.findMany({
     where: { status: { in: ["PAID", "DELIVERED"] } },
-    select: { totalNGN: true },
+    select: {
+      subtotalNGN: true,
+      deliveryFee: true,
+    },
   });
-  const revenue = revenueOrders.reduce((sum, o) => sum + o.totalNGN, 0);
+
+  const revenue = revenueOrders.reduce(
+    (sum, o) => sum + (o.subtotalNGN + o.deliveryFee),
+    0,
+  );
 
   const stats = [
     { label: "Revenue", value: formatNGN(revenue) },
