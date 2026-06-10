@@ -48,12 +48,12 @@ export function ProductCard({ product }: Props) {
           >
             {product.name}
           </p>
-          <p
+          {/* <p
             className="text-xs tracking-[0.15em] uppercase"
             style={{ color: "var(--muted)" }}
           >
             {product.color} — Size {product.size}
-          </p>
+          </p> */}
           {product.stock === 0 && (
             <p
               className="text-xs tracking-[0.1em] uppercase mt-1"
