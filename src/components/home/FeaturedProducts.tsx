@@ -87,7 +87,6 @@ export async function FeaturedProducts() {
             );
           }
 
-          // ◄ DYNAMIC WORK: Safely extract which sizes actually have units on the racks
           const stockMap = (p.sizesStock || {}) as Record<string, number>;
           const availableSizes = Object.keys(stockMap).filter(
             (size) => Number(stockMap[size]) > 0,
@@ -139,12 +138,12 @@ export async function FeaturedProducts() {
                 </p>
               </div>
 
-              <p
+              {/* <p
                 className="text-xs uppercase tracking-widest opacity-80"
                 style={{ color: "var(--muted)" }}
               >
                 {p.color} — {sizeLabelText}
-              </p>
+              </p> */}
             </Link>
           );
         })}
